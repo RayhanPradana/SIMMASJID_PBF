@@ -29,5 +29,9 @@ Route::get('users/{user}', [UserController::class, 'show']);
 Route::put('users/{user}', [UserController::class, 'update']);
 Route::delete('users/{user}', [UserController::class, 'destroy']);
 
-
+Route::get('jadwal', [JadwalController::class, 'index']);
+Route::post('jadwal', [JadwalController::class, 'store']);
+Route::get('jadwal/{jadwal}', [JadwalController::class, 'show']);
+Route::put('jadwal/{jadwal}', [JadwalController::class, 'update']);
+Route::delete('jadwal/{jadwal}', [JadwalController::class, 'destroy']);
 
