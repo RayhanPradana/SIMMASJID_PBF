@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BeritaController;
 use App\Http\Controllers\Api\PemasukanController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\JadwalController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -29,4 +30,10 @@ Route::put('users/{user}', [UserController::class, 'update']);
 Route::delete('users/{user}', [UserController::class, 'destroy']);
 
 
+//Jadwal Kegiatan
+Route::get('jadwal', [JadwalController::class, 'index']);
+Route::post('jadwal', [JadwalController::class, 'store']);
+Route::get('jadwal/{jadwal}', [JadwalController::class, 'show']);
+Route::put('jadwal/{jadwal}', [JadwalController::class, 'update']);
+Route::delete('jadwal/{jadwal}', [JadwalController::class, 'destroy']);
 
