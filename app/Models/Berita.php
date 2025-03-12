@@ -17,16 +17,7 @@ class Berita extends Model
         'tanggal',
     ];
 
-    public function setTanggalAttribute($value)
-    {
-        $this->attributes['tanggal'] = Carbon::createFromFormat('d-m-Y', $value)->format('Y-m-d');
-    }
-
-    public function getTanggalAttribute($value)
-    {
-        return Carbon::parse($value)->format('d-m-Y');
-    }
-
+     
     public function getJWTIdentifier(){
         return $this->getKey();
     }
