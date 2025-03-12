@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BeritaController;
 use App\Http\Controllers\Api\PemasukanController;
-
+use App\Http\Controllers\Api\UserController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -21,5 +21,12 @@ Route::post('pemasukan', [PemasukanController::class, 'store']);
 Route::get('pemasukan/{pemasukan}', [PemasukanController::class, 'show']);
 Route::put('pemasukan/{pemasukan}', [PemasukanController::class, 'update']);
 Route::delete('pemasukan/{pemasukan}', [PemasukanController::class, 'destroy']);
+
+Route::get('users', [UserController::class, 'index']);
+Route::post('users', [UserController::class, 'store']);
+Route::get('users/{user}', [UserController::class, 'show']);
+Route::put('users/{user}', [UserController::class, 'update']);
+Route::delete('users/{user}', [UserController::class, 'destroy']);
+
 
 
