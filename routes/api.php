@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BeritaController;
+use App\Http\Controllers\Api\FasilitasController;
 use App\Http\Controllers\Api\PemasukanController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\JadwalController;
@@ -34,4 +35,10 @@ Route::post('jadwal', [JadwalController::class, 'store']);
 Route::get('jadwal/{jadwal}', [JadwalController::class, 'show']);
 Route::put('jadwal/{jadwal}', [JadwalController::class, 'update']);
 Route::delete('jadwal/{jadwal}', [JadwalController::class, 'destroy']);
+
+Route::get('fasilitas', [FasilitasController::class, 'index']);
+Route::post('fasilitas', [FasilitasController::class, 'store']);
+Route::get('fasilitas/{fasilitas}', [FasilitasController::class, 'show']);
+Route::put('fasilitas/{fasilitas}', [FasilitasController::class, 'update']);
+Route::delete('fasilitas/{fasilitas}', [FasilitasController::class, 'destroy']);
 
