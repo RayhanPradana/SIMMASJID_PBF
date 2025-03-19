@@ -2,18 +2,22 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
-class Pemasukan extends Model
+class Keuangan extends Model
 {
-    protected $table = 'pemasukan';
+    use HasFactory;
+
+    protected $table = 'keuangan';
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'sumber',
+        'jenis',
         'jumlah',
-        'keterangan',
+        'sumber',
+        'deskripsi',
         'tanggal',
     ];
 
