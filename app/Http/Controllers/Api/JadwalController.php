@@ -59,12 +59,12 @@ class JadwalController extends Controller
         ], 201);
     }
 
-    public function show(Jadwal $jadwal)
+    public function show(Jadwal $id)
     {
-        return response()->json($jadwal);
+        return response()->json($id);
     }
 
-    public function update(Request $request, Jadwal $jadwal)
+    public function update(Request $request, Jadwal $id)
     {
         // Validasi input
         $validator = Validator::make($request->all(), [
@@ -100,18 +100,18 @@ class JadwalController extends Controller
             ], 422);
         }
 
-        $jadwal->update($request->all());
+        $id->update($request->all());
 
         return response()->json([
             'success' => true,
             'message' => 'Data jadwal berhasil diperbarui.',
-            'data' => $jadwal,
+            'data' => $id,
         ]);
     }
 
-    public function destroy(Jadwal $jadwal)
+    public function destroy(Jadwal $id)
     {
-        $jadwal->delete();
+        $id->delete();
 
         return response()->json([
             'success' => true,

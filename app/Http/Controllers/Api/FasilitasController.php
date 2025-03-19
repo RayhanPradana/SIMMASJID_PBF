@@ -46,12 +46,12 @@ class FasilitasController extends Controller
         ], 201);
     }
 
-    public function show(Fasilitas $fasilitas)
+    public function show(Fasilitas $id)
     {
-        return response()->json($fasilitas);
+        return response()->json($id);
     }
 
-    public function update(Request $request, Fasilitas $fasilitas)
+    public function update(Request $request, Fasilitas $id)
     {
         // Validasi input
         $validator = Validator::make($request->all(), [
@@ -74,18 +74,18 @@ class FasilitasController extends Controller
         }
 
         // Update data jika validasi berhasil
-        $fasilitas->update($request->all());
+        $id->update($request->all());
 
         return response()->json([
             'success' => true,
             'message' => 'Data fasilitas berhasil diperbarui.',
-            'data' => $fasilitas,
+            'data' => $id,
         ]);
     }
 
-    public function destroy(Fasilitas $fasilitas)
+    public function destroy(Fasilitas $id)
     {
-        $fasilitas->delete();
+        $id->delete();
 
         return response()->json([
             'success' => true,
