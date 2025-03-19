@@ -32,13 +32,13 @@ Route::delete('users/{user}', [UserController::class, 'destroy']);
 
 Route::get('jadwal', [JadwalController::class, 'index']);
 Route::post('jadwal', [JadwalController::class, 'store']);
-Route::get('jadwal/{jadwal}', [JadwalController::class, 'show']);
-Route::put('jadwal/{jadwal}', [JadwalController::class, 'update']);
-Route::delete('jadwal/{jadwal}', [JadwalController::class, 'destroy']);
+Route::get('jadwal/{id}', [JadwalController::class, 'show']);
+Route::put('jadwal/{id}', [JadwalController::class, 'update']);
+Route::delete('jadwal/{id}', [JadwalController::class, 'destroy']);
 
 Route::get('fasilitas', [FasilitasController::class, 'index']);
 Route::post('fasilitas', [FasilitasController::class, 'store']);
-Route::get('fasilitas/{fasilitas}', [FasilitasController::class, 'show']);
-Route::put('fasilitas/{fasilitas}', [FasilitasController::class, 'update']);
-Route::delete('fasilitas/{fasilitas}', [FasilitasController::class, 'destroy']);
+Route::get('fasilitas/{id}', [FasilitasController::class, 'show']);
+Route::put('fasilitas/{id}', [FasilitasController::class, 'update']);
+Route::delete('fasilitas/{id}', [FasilitasController::class, 'destroy']);
 
