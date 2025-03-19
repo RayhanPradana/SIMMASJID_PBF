@@ -3,7 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BeritaController;
-use App\Http\Controllers\Api\KeuanganController;
+use App\Http\Controllers\Api\FasilitasController;
+use App\Http\Controllers\Api\PemasukanController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\JadwalController;
 use App\Http\Controllers\Api\ReservasiController;
@@ -33,9 +34,15 @@ Route::delete('users/{user}', [UserController::class, 'destroy']);
 
 Route::get('jadwal', [JadwalController::class, 'index']);
 Route::post('jadwal', [JadwalController::class, 'store']);
-Route::get('jadwal/{jadwal}', [JadwalController::class, 'show']);
-Route::put('jadwal/{jadwal}', [JadwalController::class, 'update']);
-Route::delete('jadwal/{jadwal}', [JadwalController::class, 'destroy']);
+Route::get('jadwal/{id}', [JadwalController::class, 'show']);
+Route::put('jadwal/{id}', [JadwalController::class, 'update']);
+Route::delete('jadwal/{id}', [JadwalController::class, 'destroy']);
+
+Route::get('fasilitas', [FasilitasController::class, 'index']);
+Route::post('fasilitas', [FasilitasController::class, 'store']);
+Route::get('fasilitas/{id}', [FasilitasController::class, 'show']);
+Route::put('fasilitas/{id}', [FasilitasController::class, 'update']);
+Route::delete('fasilitas/{id}', [FasilitasController::class, 'destroy']);
 
 Route::get('reservasi', [ReservasiController::class, 'index']);
 Route::post('reservasi', [ReservasiController::class, 'store']);
