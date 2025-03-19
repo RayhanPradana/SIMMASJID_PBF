@@ -22,10 +22,10 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $fillable = [
         'name',
-        'username',
         'email',
         'phone',
         'address',
+        'image',
         'role',
         'password',
     ];
@@ -60,6 +60,13 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims(){
         return [];
     }
+
+    protected function image(): Attribute{
+        return Attribute::make(
+            get: fn ($image) => url('/storage/posts' . $image),
+        );
+    }
+
 
     protected $table = 'users';
     protected $primaryKey = 'id';

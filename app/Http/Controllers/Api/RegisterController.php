@@ -17,6 +17,7 @@ class RegisterController extends Controller
             'email' => 'required|email|unique:users,email|max:255',
             'phone' => 'nullable|string|max:255',
             'address' => 'nullable|string',
+            'image' => 'required|image|mimes:jpeg,png,jpg,svg|max:2048',
             'role' => 'required|in:admin,pengurusmesjid,jemaah',
             'password' => [
                 'required',
@@ -31,16 +32,24 @@ class RegisterController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
+        $image = $request->file('image');
+        if ($image) {
+            $image->store('public/images');
+        } else {
+            $image = null;
+        }
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
             'address' => $request->address,
+            'image' => $image->hashName(),
             'role' => $request->role,
             'password' => bcrypt($request->password),
         ]);
 
-        if($user){
+        if ($user) {
             return response()->json([
                 'success' => true,
                 'user' => $user,

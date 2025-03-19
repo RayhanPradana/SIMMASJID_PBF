@@ -34,9 +34,9 @@ Route::delete('pemasukan/{pemasukan}', [PemasukanController::class, 'destroy']);
 
 Route::get('users', [UserController::class, 'index']);
 Route::post('users', [UserController::class, 'store']);
-Route::get('users/{user}', [UserController::class, 'show']);
-Route::put('users/{user}', [UserController::class, 'update']);
-Route::delete('users/{user}', [UserController::class, 'destroy']);
+Route::get('users/{id}', [UserController::class, 'show']);
+Route::put('users/{id}', [UserController::class, 'update']);
+Route::delete('users/{id}', [UserController::class, 'destroy']);
 
 Route::get('jadwal', [JadwalController::class, 'index']);
 Route::post('jadwal', [JadwalController::class, 'store']);
