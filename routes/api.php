@@ -14,11 +14,11 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::get('beritaa', [BeritaController::class, 'index']);
-Route::post('beritaa', [BeritaController::class, 'store']);
-Route::get('beritaa/{id}', [BeritaController::class, 'show']);
-Route::put('beritaa/{id}', [BeritaController::class, 'update']);
-Route::delete('beritaa/{id}', [BeritaController::class, 'destroy']);
+Route::get('berita', [BeritaController::class, 'index']);
+Route::post('berita', [BeritaController::class, 'store']);
+Route::get('berita/{id}', [BeritaController::class, 'show']);
+Route::put('berita/{id}', [BeritaController::class, 'update']);
+Route::delete('berita/{id}', [BeritaController::class, 'destroy']);
 
 Route::get('keuangan', [KeuanganController::class, 'index']);
 Route::post('keuangan', [KeuanganController::class, 'store']);
