@@ -41,4 +41,3 @@ Route::post('fasilitas', [FasilitasController::class, 'store']);
 Route::get('fasilitas/{id}', [FasilitasController::class, 'show']);
 Route::put('fasilitas/{id}', [FasilitasController::class, 'update']);
 Route::delete('fasilitas/{id}', [FasilitasController::class, 'destroy']);
-
