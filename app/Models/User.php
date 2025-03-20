@@ -8,8 +8,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -21,10 +22,10 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'username',
         'email',
         'phone',
         'address',
+        'image',
         'role',
         'password',
     ];
@@ -52,13 +53,6 @@ class User extends Authenticatable
         ];
     }
 
-    protected function password(): Attribute
-    {
-        return Attribute::make(
-            set: fn ($value) => Hash::make($value),
-        );
-    }
-
     public function getJWTIdentifier(){
         return $this->getKey();
     }
@@ -66,6 +60,13 @@ class User extends Authenticatable
     public function getJWTCustomClaims(){
         return [];
     }
+
+    protected function image(): Attribute{
+        return Attribute::make(
+            get: fn ($image) => url('/storage/posts' . $image),
+        );
+    }
+
 
     protected $table = 'users';
     protected $primaryKey = 'id';
