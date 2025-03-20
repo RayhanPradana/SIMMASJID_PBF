@@ -6,18 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Carbon\Carbon; // Tambahkan ini untuk mendapatkan waktu saat ini
 
 class RegisterController extends Controller
 {
-
-    public function __invoke(Request $request)
+    public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email|max:255',
             'phone' => 'nullable|string|max:255',
             'address' => 'nullable|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,svg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
             'role' => 'required|in:admin,pengurusmesjid,jemaah',
             'password' => [
                 'required',
@@ -33,10 +33,11 @@ class RegisterController extends Controller
         }
 
         $image = $request->file('image');
+        $imagePath = null;
+
         if ($image) {
-            $image->store('public/images');
-        } else {
-            $image = null;
+            $imagePath = $image->store('public/images');
+            $imagePath = basename($imagePath); // Ambil hanya nama file, bukan path lengkap
         }
 
         $user = User::create([
@@ -44,9 +45,10 @@ class RegisterController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'address' => $request->address,
-            'image' => $image->hashName(),
+            'image' => $imagePath, // Simpan nama file atau null jika tidak ada gambar
             'role' => $request->role,
             'password' => bcrypt($request->password),
+            'email_verified_at' => Carbon::now(), // Set email langsung terverifikasi
         ]);
 
         if ($user) {

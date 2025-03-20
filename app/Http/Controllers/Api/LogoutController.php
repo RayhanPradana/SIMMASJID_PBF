@@ -3,22 +3,30 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Auth;
 
 class LogoutController extends Controller
 {
-    public function __invoke(Request $request)
+    public function logout(Request $request)
     {
-        $removeToken = JWTAuth::invalidate(JWTAuth::getToken());
+        // Ambil token dari request (header atau input)
+        $token = $request->header('Authorization') ?? $request->input('token');
 
-        if($removeToken){
+        // Jika token tidak ditemukan, kembalikan response error
+        if (!$token) {
             return response()->json([
-                'success' => true,
-                'message' => 'Logout Berhasil',
-            ]);
+                'success' => false,
+                'message' => 'Token tidak ditemukan'
+            ], 400);
         }
+
+        // Logout pengguna dengan menghapus sesi autentikasi
+        Auth::guard('api')->logout();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Logout berhasil'
+        ], 200);
     }
 }

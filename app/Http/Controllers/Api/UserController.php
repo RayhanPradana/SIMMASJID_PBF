@@ -24,8 +24,8 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email|max:255',
             'phone' => 'nullable|string|max:255',
             'address' => 'nullable|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,svg|max:2048',
-            'role' => 'required|in:admin,pengurusmesjid,jemaah',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
+            'role' => 'required|in:admin,jemaah',
             'password' => [
                 'required',
                 'string',
@@ -79,7 +79,7 @@ class UserController extends Controller
             'phone' => 'nullable|string|max:255',
             'address' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
-            'role' => 'nullable|in:admin,pengurusmesjid,jemaah',
+            'role' => 'nullable|in:admin,jemaah',
             'password' => [
                 'nullable',
                 'string',
@@ -101,7 +101,7 @@ class UserController extends Controller
             if ($id->image) {
                 Storage::disk('public')->delete('images/' . $id->image);
             }
-        
+
             // Simpan gambar baru dan ambil nama filenya
             $imageName = $request->file('image')->store('images', 'public');
             $imageName = basename($imageName);
