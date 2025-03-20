@@ -36,7 +36,7 @@ class PembayaranController extends Controller
                 'jumlah' => 'required|numeric|min:0',
                 'status' => 'required|in:pending,sukses,gagal',
                 'bukti_transfer' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'tanggal_pembayaran' => 'nullable|date_format:D-M-y'
+                'tanggal_pembayaran' => 'nullable|date_format:d-m-Y'
             ]);
 
             if ($request->hasFile('bukti_transfer')) {
