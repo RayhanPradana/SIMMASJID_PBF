@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\PembayaranController;
+use App\Http\Controllers\Api\KeuanganController;
 use App\Http\Controllers\Api\AuthController;
 
 
