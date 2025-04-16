@@ -64,5 +64,6 @@ class User extends Authenticatable
     protected $primaryKey = 'id';
 
     //user
+    //update
     
 }
