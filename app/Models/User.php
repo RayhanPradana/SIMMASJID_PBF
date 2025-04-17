@@ -65,5 +65,5 @@ class User extends Authenticatable
 
     //user
     //update
-    
+    //baru
 }
