@@ -27,6 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::put('users/{id}', [UserController::class, 'update']);
+    Route::get('users', [UserController::class, 'index']);
 
     Route::get('berita', [BeritaController::class, 'index']);
     Route::get('berita/{id}', [BeritaController::class, 'show']);
