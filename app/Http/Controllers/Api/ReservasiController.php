@@ -1,22 +1,23 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Berita;
-use Illuminate\Validation\Rule;
+use App\Models\ReservasiFasilitas;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class BeritaController extends Controller
+class ReservasiController extends Controller
 {
     public function index()
     {
         try {
-            $berita = Berita::all();
+            $reservasi = ReservasiFasilitas::all();
             return response()->json([
                 'success' => true,
-                'message' => 'Data Berita Berhasil Diambil',
-                'data' => $berita
+                'message' => 'Data Reservasi Berhasil Diambil',
+                'data' => $reservasi
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -30,17 +31,22 @@ class BeritaController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'judul' => 'required|string|max:255|unique:beritas,judul',
-                'konten' => 'required|string',
-                'kategori' => 'required|string|max:100',
-                'penulis' => 'required|string|max:100',
+                'user_id' => 'required|integer|exists:users,id',
+                'fasilitas_id' => 'required|integer|exists:fasilitas,id',
+                'tanggal_mulai' => 'required|date',
+                'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
+                'waktu_mulai' => 'required|date_format:H:i',
+                'waktu_selesai' => 'required|date_format:H:i|after:waktu_mulai',
             ]);
 
-            $berita = Berita::create($validatedData);
+            $validatedData['status'] = 'pending'; // Set status default pending
+
+            $reservasi = ReservasiFasilitas::create($validatedData);
+
             return response()->json([
                 'success' => true,
-                'message' => 'Berita Berhasil Dibuat',
-                'data' => $berita
+                'message' => 'Reservasi Berhasil Dibuat',
+                'data' => $reservasi
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
@@ -53,16 +59,16 @@ class BeritaController extends Controller
     public function show($id)
     {
         try {
-            $berita = Berita::findOrFail($id);
+            $reservasi = ReservasiFasilitas::findOrFail($id);
             return response()->json([
                 'success' => true,
-                'message' => 'Data Berita Ditemukan',
-                'data' => $berita
+                'message' => 'Data Reservasi Ditemukan',
+                'data' => $reservasi
             ], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Berita tidak ditemukan'
+                'message' => 'Reservasi tidak ditemukan'
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
@@ -75,25 +81,29 @@ class BeritaController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $berita = Berita::findOrFail($id);
+            $reservasi = ReservasiFasilitas::findOrFail($id);
 
             $validatedData = $request->validate([
-                'judul' => ['sometimes', 'string', 'max:255', Rule::unique('beritas', 'judul')->ignore($id)],
-                'konten' => 'sometimes|string',
-                'kategori' => 'sometimes|string|max:100',
-                'penulis' => 'sometimes|string|max:100',
+                'user_id' => 'sometimes|integer|exists:users,id',
+                'fasilitas_id' => 'sometimes|integer|exists:fasilitas,id',
+                'tanggal_mulai' => 'sometimes|date',
+                'tanggal_selesai' => 'sometimes|date|after_or_equal:tanggal_mulai',
+                'waktu_mulai' => 'sometimes|date_format:H:i',
+                'waktu_selesai' => 'sometimes|date_format:H:i|after:waktu_mulai',
+                'status' => 'sometimes|string|in:pending,approved,rejected',
             ]);
 
-            $berita->update($validatedData);
+            $reservasi->update($validatedData);
+
             return response()->json([
                 'success' => true,
-                'message' => 'Berita Berhasil Diperbarui',
-                'data' => $berita
+                'message' => 'Reservasi Berhasil Diperbarui',
+                'data' => $reservasi
             ], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Berita tidak ditemukan'
+                'message' => 'Reservasi tidak ditemukan'
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
@@ -106,17 +116,17 @@ class BeritaController extends Controller
     public function destroy($id)
     {
         try {
-            $berita = Berita::findOrFail($id);
-            $berita->delete();
+            $reservasi = ReservasiFasilitas::findOrFail($id);
+            $reservasi->delete();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Berita Berhasil Dihapus'
+                'message' => 'Reservasi Berhasil Dihapus'
             ], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Berita tidak ditemukan'
+                'message' => 'Reservasi tidak ditemukan'
             ], 404);
         } catch (\Exception $e) {
             return response()->json([

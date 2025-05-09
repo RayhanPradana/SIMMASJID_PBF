@@ -3,20 +3,20 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Berita;
+use App\Models\Pembayaran;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class BeritaController extends Controller
+class PembayaranController extends Controller
 {
     public function index()
     {
         try {
-            $berita = Berita::all();
+            $pembayaran = Pembayaran::all();
             return response()->json([
                 'success' => true,
-                'message' => 'Data Berita Berhasil Diambil',
-                'data' => $berita
+                'message' => 'Data Pembayaran Berhasil Diambil',
+                'data' => $pembayaran
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -30,17 +30,24 @@ class BeritaController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'judul' => 'required|string|max:255|unique:beritas,judul',
-                'konten' => 'required|string',
-                'kategori' => 'required|string|max:100',
-                'penulis' => 'required|string|max:100',
+                'user_id' => 'required|exists:users,id',
+                'reservasi_id' => 'required|exists:reservasi_fasilitas,id',
+                'metode_pembayaran' => 'required|string|max:100',
+                'jumlah' => 'required|numeric|min:0',
+                'status' => 'required|in:pending,sukses,gagal',
+                'bukti_transfer' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'tanggal_pembayaran' => 'nullable|date_format:d-m-Y'
             ]);
 
-            $berita = Berita::create($validatedData);
+            if ($request->hasFile('bukti_transfer')) {
+                $validatedData['bukti_transfer'] = $request->file('bukti_transfer')->store('bukti_transfer', 'public');
+            }
+
+            $pembayaran = Pembayaran::create($validatedData);
             return response()->json([
                 'success' => true,
-                'message' => 'Berita Berhasil Dibuat',
-                'data' => $berita
+                'message' => 'Pembayaran Berhasil Dibuat',
+                'data' => $pembayaran
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
@@ -53,16 +60,16 @@ class BeritaController extends Controller
     public function show($id)
     {
         try {
-            $berita = Berita::findOrFail($id);
+            $pembayaran = Pembayaran::findOrFail($id);
             return response()->json([
                 'success' => true,
-                'message' => 'Data Berita Ditemukan',
-                'data' => $berita
+                'message' => 'Data Pembayaran Ditemukan',
+                'data' => $pembayaran
             ], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Berita tidak ditemukan'
+                'message' => 'Pembayaran tidak ditemukan'
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
@@ -75,25 +82,30 @@ class BeritaController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $berita = Berita::findOrFail($id);
+            $pembayaran = Pembayaran::findOrFail($id);
 
             $validatedData = $request->validate([
-                'judul' => ['sometimes', 'string', 'max:255', Rule::unique('beritas', 'judul')->ignore($id)],
-                'konten' => 'sometimes|string',
-                'kategori' => 'sometimes|string|max:100',
-                'penulis' => 'sometimes|string|max:100',
+                'metode_pembayaran' => 'sometimes|string|max:100',
+                'jumlah' => 'sometimes|numeric|min:0',
+                'status' => 'sometimes|in:pending,sukses,gagal',
+                'bukti_transfer' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'tanggal_pembayaran' => 'sometimes|date_format:Y-m-d'
             ]);
 
-            $berita->update($validatedData);
+            if ($request->hasFile('bukti_transfer')) {
+                $validatedData['bukti_transfer'] = $request->file('bukti_transfer')->store('bukti_transfer', 'public');
+            }
+
+            $pembayaran->update($validatedData);
             return response()->json([
                 'success' => true,
-                'message' => 'Berita Berhasil Diperbarui',
-                'data' => $berita
+                'message' => 'Pembayaran Berhasil Diperbarui',
+                'data' => $pembayaran
             ], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Berita tidak ditemukan'
+                'message' => 'Pembayaran tidak ditemukan'
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
@@ -106,17 +118,17 @@ class BeritaController extends Controller
     public function destroy($id)
     {
         try {
-            $berita = Berita::findOrFail($id);
-            $berita->delete();
+            $pembayaran = Pembayaran::findOrFail($id);
+            $pembayaran->delete();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Berita Berhasil Dihapus'
+                'message' => 'Pembayaran Berhasil Dihapus'
             ], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Berita tidak ditemukan'
+                'message' => 'Pembayaran tidak ditemukan'
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
