@@ -24,7 +24,7 @@ class AuthController extends Controller
                 'required',
                 'string',
                 'min:8',
-                'confirmed', 
+                'confirmed',
                 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/'
             ],
             'password_confirmation' => 'required',
@@ -42,7 +42,7 @@ class AuthController extends Controller
         $imagePath = null;
 
         if ($image) {
-            $imagePath = $image->store('images', 'public'); 
+            $imagePath = $image->store('images', 'public');
         }
 
         $user = User::create([
@@ -101,7 +101,7 @@ class AuthController extends Controller
     $user = User::where('email', $request->email)->firstOrFail();
     $token = $user->createToken('auth_token')->plainTextToken;
 
-    $redirectUrl = $user->role === 'admin' ? '/admin/dashboard' : 'user/landing_page';
+    $redirectUrl = $user->role === 'admin' ? '/dashboard' : '/landing-page';
 
     return response()->json([
         'success' => true,
