@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Keuangan;
+use Illuminate\Validation\ValidationException;
 
 class KeuanganController extends Controller
 {
@@ -15,16 +16,22 @@ class KeuanganController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'jenis' => 'required|in:pemasukan,pengeluaran',
-            'jumlah' => 'required|numeric|min:0',
-            'sumber' => 'nullable|string|max:255',
-            'deskripsi' => 'nullable|string',
-            'tanggal' => 'required|date',
-        ]);
+        try {
+            $data = $request->validate([
+                'jenis' => 'required|in:pemasukan,pengeluaran',
+                'jumlah' => 'required|numeric|min:0',
+                'sumber' => 'nullable|string|max:255',
+                'deskripsi' => 'nullable|string',
+                'tanggal' => 'required|date',
+            ]);
 
-        $keuangan = Keuangan::create($data);
-        return response()->json(['message' => 'Data berhasil ditambahkan', 'data' => $keuangan], 201);
+            $keuangan = Keuangan::create($data);
+            return response()->json(['message' => 'Data berhasil ditambahkan', 'data' => $keuangan], 201);
+        } catch (ValidationException $e) {
+            return response()->json(['message' => 'Validasi gagal', 'errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Terjadi kesalahan', 'error' => $e->getMessage()], 500);
+        }
     }
 
     public function show($id)
@@ -34,20 +41,27 @@ class KeuanganController extends Controller
     }
 
     public function update(Request $request, $id)
-{
-    $keuangan = Keuangan::findOrFail($id);
-
-    // Pastikan data berasal dari body request, bukan query parameter
-    $data = $request->only(['jenis', 'jumlah', 'sumber', 'deskripsi', 'tanggal']);
-
-    if (empty($data)) {
-        return response()->json(['message' => 'Data tidak ditemukan dalam request'], 400);
+    {
+        try {
+            $keuangan = Keuangan::findOrFail($id);
+            
+            // Validasi data input
+            $data = $request->validate([
+                'jenis' => 'sometimes|required|in:pemasukan,pengeluaran',
+                'jumlah' => 'sometimes|required|numeric|min:0',
+                'sumber' => 'nullable|string|max:255',
+                'deskripsi' => 'nullable|string',
+                'tanggal' => 'sometimes|required|date',
+            ]);
+            
+            $keuangan->update($data);
+            return response()->json(['message' => 'Data berhasil diperbarui', 'data' => $keuangan]);
+        } catch (ValidationException $e) {
+            return response()->json(['message' => 'Validasi gagal', 'errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Terjadi kesalahan', 'error' => $e->getMessage()], 500);
+        }
     }
-
-    $keuangan->update($data);
-    return response()->json(['message' => 'Data berhasil diperbarui', 'data' => $keuangan]);
-}
-
 
     public function destroy($id)
     {
