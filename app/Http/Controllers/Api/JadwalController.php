@@ -22,7 +22,7 @@ class JadwalController extends Controller
             'hari' => 'required|string|max:50',
             'waktu' => 'required|string|max:50',
             'tempat' => 'required|string|max:255',
-            'penanggung_jawab' => 'nullable|string|max:255',
+            'penanggung_jawab' => 'required|string|max:255',
             'keterangan' => 'nullable|string|max:500',
         ], [
             'nama_kegiatan.required' => 'Nama kegiatan wajib diisi.',
@@ -37,6 +37,7 @@ class JadwalController extends Controller
             'tempat.required' => 'Tempat kegiatan wajib diisi.',
             'tempat.string' => 'Tempat harus berupa teks.',
             'tempat.max' => 'Tempat maksimal 255 karakter.',
+            'penanggung_jawab.required' => 'Penanggung jawab wajib diisi.',
             'penanggung_jawab.string' => 'Penanggung jawab harus berupa teks.',
             'penanggung_jawab.max' => 'Penanggung jawab maksimal 255 karakter.',
             'keterangan.string' => 'Keterangan harus berupa teks.',
@@ -44,6 +45,7 @@ class JadwalController extends Controller
         ]);
 
         if ($validator->fails()) {
+
             return response()->json([
                 'success' => false,
                 'errors' => $validator->errors(),
