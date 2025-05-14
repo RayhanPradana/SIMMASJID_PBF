@@ -171,19 +171,27 @@ class ReservasiController extends Controller
                 $jam_mulai = $validatedData['jam_mulai'] ?? $reservasi->jam_mulai;
                 $jam_selesai = $validatedData['jam_selesai'] ?? $reservasi->jam_selesai;
 
-                // Cek ketersediaan dengan pengecualian ID saat ini
-                $isBooked = $this->checkAvailability(
-                    $fasilitas_id,
-                    $tgl_reservasi,
-                    $jam_mulai,
-                    $jam_selesai,
-                    $id // Exclude current reservation
-                );
+                // Cek apakah tanggal dan jam sama persis dengan data saat ini
+                if (($tgl_reservasi == $reservasi->tgl_reservasi) &&
+                    ($jam_mulai == $reservasi->jam_mulai) &&
+                    ($jam_selesai == $reservasi->jam_selesai) &&
+                    ($fasilitas_id == $reservasi->fasilitas_id)) {
+                    // Tidak perlu cek ketersediaan jika tidak ada perubahan pada waktu dan fasilitas
+                } else {
+                    // Cek ketersediaan dengan pengecualian ID saat ini
+                    $isBooked = $this->checkAvailability(
+                        $fasilitas_id,
+                        $tgl_reservasi,
+                        $jam_mulai,
+                        $jam_selesai,
+                        $id // Exclude current reservation
+                    );
 
-                if ($isBooked) {
-                    throw ValidationException::withMessages([
-                        'jam_mulai' => ['Fasilitas sudah dipesan pada jam tersebut. Silakan pilih waktu lain.']
-                    ]);
+                    if ($isBooked) {
+                        throw ValidationException::withMessages([
+                            'jam_mulai' => ['Fasilitas sudah dipesan pada jam tersebut. Silakan pilih waktu lain.']
+                        ]);
+                    }
                 }
             }
 
