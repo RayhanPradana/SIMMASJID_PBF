@@ -58,7 +58,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // Keuangan
         Route::get('keuangan', [KeuanganController::class, 'index']);
-        Route::post('keuangans', [KeuanganController::class, 'store']);
+        Route::post('keuangan', [KeuanganController::class, 'store']);
         Route::get('keuangan/{id}', [KeuanganController::class, 'show']);
         Route::put('keuangan/{id}', [KeuanganController::class, 'update']);
         Route::delete('keuangan/{id}', [KeuanganController::class, 'destroy']);
