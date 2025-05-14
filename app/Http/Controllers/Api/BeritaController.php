@@ -110,7 +110,7 @@ class BeritaController extends Controller
 
             if ($request->hasFile('gambar')) {
                 if ($berita->gambar) {
-                    Storage::disk('public')->delete('images/' . $berita->gambar);
+                    Storage::disk('public')->delete(paths: 'images/' . $berita->gambar);
                 }
 
                 $imageName = 'images/' . basename($request->file('gambar')->store('images', 'public'));
