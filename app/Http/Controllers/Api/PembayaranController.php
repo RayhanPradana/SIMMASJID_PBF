@@ -12,7 +12,9 @@ class PembayaranController extends Controller
     public function index()
     {
         try {
-            $pembayaran = Pembayaran::all();
+            // Mengambil semua data pembayaran beserta data reservasi yang berelasi
+            $pembayaran = Pembayaran::with('reservasi')->get();
+
             return response()->json([
                 'success' => true,
                 'message' => 'Data Pembayaran Berhasil Diambil',
@@ -32,11 +34,10 @@ class PembayaranController extends Controller
             $validatedData = $request->validate([
                 'user_id' => 'required|exists:users,id',
                 'reservasi_id' => 'required|exists:reservasi_fasilitas,id',
-                'metode_pembayaran' => 'required|string|max:100',
+                'tanggal_reservasi' => 'nullable|date_format:d-m-Y',
+                'tanggal_pembayaran' => 'nullable|date_format:d-m-Y',
                 'jumlah' => 'required|numeric|min:0',
                 'status' => 'required|in:pending,sukses,gagal',
-                'bukti_transfer' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'tanggal_pembayaran' => 'nullable|date_format:d-m-Y'
             ]);
 
             if ($request->hasFile('bukti_transfer')) {
@@ -44,6 +45,7 @@ class PembayaranController extends Controller
             }
 
             $pembayaran = Pembayaran::create($validatedData);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Pembayaran Berhasil Dibuat',
@@ -60,7 +62,9 @@ class PembayaranController extends Controller
     public function show($id)
     {
         try {
-            $pembayaran = Pembayaran::findOrFail($id);
+            // Menampilkan data pembayaran beserta reservasi yang berelasi
+            $pembayaran = Pembayaran::with('reservasi')->findOrFail($id);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Data Pembayaran Ditemukan',
@@ -85,10 +89,8 @@ class PembayaranController extends Controller
             $pembayaran = Pembayaran::findOrFail($id);
 
             $validatedData = $request->validate([
-                'metode_pembayaran' => 'sometimes|string|max:100',
                 'jumlah' => 'sometimes|numeric|min:0',
                 'status' => 'sometimes|in:pending,sukses,gagal',
-                'bukti_transfer' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'tanggal_pembayaran' => 'sometimes|date_format:Y-m-d'
             ]);
 
@@ -97,6 +99,7 @@ class PembayaranController extends Controller
             }
 
             $pembayaran->update($validatedData);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Pembayaran Berhasil Diperbarui',

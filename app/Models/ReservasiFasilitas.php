@@ -13,11 +13,12 @@ class ReservasiFasilitas extends Model
     protected $fillable = [
         'user_id',
         'fasilitas_id',
-        'tanggal_mulai',
-        'tanggal_selesai',
-        'waktu_mulai',
-        'waktu_selesai',
-        'status',
+        'acara_id',
+        'tgl_reservasi',
+        'jam_mulai',
+        'jam_selesai',
+        'tgl_pembayaran',
+        'status_pembayaran',
     ];
 
     public function user()
@@ -30,35 +31,93 @@ class ReservasiFasilitas extends Model
         return $this->belongsTo(Fasilitas::class, 'fasilitas_id');
     }
 
-    // Setter: Konversi format input tanggal ke format MySQL (YYYY-MM-DD)
-    public function setTanggalMulaiAttribute($value)
+    public function acara()
     {
-        $this->attributes['tanggal_mulai'] = Carbon::createFromFormat('d-m-Y', $value)->format('Y-m-d');
+        return $this->belongsTo(Acara::class, 'acara_id');
     }
 
-    public function setTanggalSelesaiAttribute($value)
+    // Cast tipe data
+    protected $casts = [
+        'tgl_reservasi' => 'date',
+        'tgl_pembayaran' => 'date',
+        'status_pembayaran' => 'string',
+    ];
+
+    /**
+     * Get the tgl_reservasi attribute in d-m-Y format.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getTglReservasiAttribute($value)
     {
-        $this->attributes['tanggal_selesai'] = Carbon::createFromFormat('d-m-Y', $value)->format('Y-m-d');
+        if ($value) {
+            return Carbon::parse($value)->format('d-m-Y');
+        }
+        return null;
     }
 
-    // Getter: Konversi format tanggal untuk ditampilkan ke user (DD-MM-YYYY)
-    public function getTanggalMulaiAttribute($value)
+    /**
+     * Set the tgl_reservasi attribute from d-m-Y format to Y-m-d.
+     *
+     * @param  string  $value
+     * @return void
+     */
+    public function setTglReservasiAttribute($value)
     {
-        return Carbon::parse($value)->format('d-m-Y');
+        if ($value) {
+            // Check if value is already in proper format
+            if (preg_match('/^\d{1,2}-\d{1,2}-\d{4}$/', $value)) {
+                $this->attributes['tgl_reservasi'] = Carbon::createFromFormat('d-m-Y', $value);
+            } else {
+                $this->attributes['tgl_reservasi'] = $value;
+            }
+        } else {
+            $this->attributes['tgl_reservasi'] = null;
+        }
     }
 
-    public function getTanggalSelesaiAttribute($value)
+    /**
+     * Get the tgl_pembayaran attribute in d-m-Y format.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public function getTglPembayaranAttribute($value)
     {
-        return Carbon::parse($value)->format('d-m-Y');
+        if ($value) {
+            return Carbon::parse($value)->format('d-m-Y');
+        }
+        return null;
+    }
+
+    /**
+     * Set the tgl_pembayaran attribute from d-m-Y format to Y-m-d.
+     *
+     * @param  string  $value
+     * @return void
+     */
+    public function setTglPembayaranAttribute($value)
+    {
+        if ($value) {
+            // Check if value is already in proper format
+            if (preg_match('/^\d{1,2}-\d{1,2}-\d{4}$/', $value)) {
+                $this->attributes['tgl_pembayaran'] = Carbon::createFromFormat('d-m-Y', $value);
+            } else {
+                $this->attributes['tgl_pembayaran'] = $value;
+            }
+        } else {
+            $this->attributes['tgl_pembayaran'] = null;
+        }
     }
 
     // Getter: Format waktu (HH:MM)
-    public function getWaktuMulaiAttribute($value)
+    public function getJamMulaiAttribute($value)
     {
         return Carbon::parse($value)->format('H:i');
     }
 
-    public function getWaktuSelesaiAttribute($value)
+    public function getJamSelesaiAttribute($value)
     {
         return Carbon::parse($value)->format('H:i');
     }

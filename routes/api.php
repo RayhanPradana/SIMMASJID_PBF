@@ -14,6 +14,8 @@ use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\PembayaranController;
 use App\Http\Controllers\Api\KeuanganController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\AcaraController;
+
 
 
 Route::get('/user', function (Request $request) {
@@ -74,11 +76,25 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('jadwal/{id}', [JadwalController::class, 'update']);
         Route::delete('jadwal/{id}', [JadwalController::class, 'destroy']);
 
+        Route::get('acara', [AcaraController::class, 'index']);
+        Route::post('acara', [AcaraController::class, 'store']);
+        Route::get('acara/{id}', [AcaraController::class, 'show']);
+        Route::put('acara/{id}', [AcaraController::class, 'update']);
+        Route::delete('acara/{id}', [AcaraController::class, 'destroy']);
+
         Route::get('fasilitas', [FasilitasController::class, 'index']);
         Route::post('fasilitas', [FasilitasController::class, 'store']);
         Route::get('fasilitas/{id}', [FasilitasController::class, 'show']);
         Route::put('fasilitas/{id}', [FasilitasController::class, 'update']);
         Route::delete('fasilitas/{id}', [FasilitasController::class, 'destroy']);
+
+        Route::get('reservasi', [ReservasiController::class, 'index']);
+        Route::post('reservasi', [ReservasiController::class, 'store']);
+        Route::get('reservasi/{id}', [ReservasiController::class, 'show']);
+        Route::put('reservasi/{id}', [ReservasiController::class, 'update']);
+        Route::delete('reservasi/{id}', [ReservasiController::class, 'destroy']);
+
+
 
     });
 });

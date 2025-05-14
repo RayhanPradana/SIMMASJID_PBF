@@ -6,29 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('reservasi_fasilitas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('acara_id')->constrained('acara')->onDelete('cascade');
             $table->foreignId('fasilitas_id')->constrained('fasilitas')->onDelete('cascade');
-            $table->date('tanggal_mulai');
-            $table->date('tanggal_selesai');
-            $table->time('waktu_mulai');
-            $table->time('waktu_selesai');
-            $table->enum('status', ['pending', 'disetujui', 'ditolak'])->default('pending');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->date('tgl_reservasi');
+            $table->time('jam_mulai');
+            $table->time('jam_selesai');
+            $table->date('tgl_pembayaran')->nullable();
+            $table->enum('status_pembayaran', ['unpaid', 'paid'])->default('paid');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('reservasi');
     }
 };

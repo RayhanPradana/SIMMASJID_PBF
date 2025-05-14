@@ -13,6 +13,8 @@ class Fasilitas extends Model
     protected $fillable = [
         'nama_fasilitas',
         'keterangan',
+        'harga',
+        'status',
     ];
 
     public function getJWTIdentifier(){

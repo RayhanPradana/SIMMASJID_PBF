@@ -20,12 +20,20 @@ class FasilitasController extends Controller
         $validator = Validator::make($request->all(), [
             'nama_fasilitas' => 'required|string|max:255',
             'keterangan' => 'required|string|max:500',
+            'harga' => 'required|numeric|min:0', // validasi harga
+            'status' => 'required|in:tersedia,tidaktersedia', // validasi status
         ], [
             'nama_fasilitas.required' => 'Nama fasilitas wajib diisi.',
             'nama_fasilitas.string' => 'Nama fasilitas harus berupa teks.',
             'nama_fasilitas.max' => 'Nama fasilitas maksimal 255 karakter.',
+            'keterangan.required' => 'Keterangan wajib diisi.',
             'keterangan.string' => 'Keterangan harus berupa teks.',
             'keterangan.max' => 'Keterangan maksimal 500 karakter.',
+            'harga.required' => 'Harga wajib diisi.',
+            'harga.numeric' => 'Harga harus berupa angka.',
+            'harga.min' => 'Harga tidak boleh kurang dari 0.',
+            'status.required' => 'Status wajib diisi.',
+            'status.in' => 'Status harus bernilai "tersedia" atau "tidaktersedia".',
         ]);
 
         // Jika validasi gagal
@@ -37,7 +45,7 @@ class FasilitasController extends Controller
         }
 
         // Simpan data jika validasi berhasil
-        $fasilitas = Fasilitas::create($request->all());
+        $fasilitas = Fasilitas::create($request->only(['nama_fasilitas', 'keterangan', 'harga', 'status']));
 
         return response()->json([
             'success' => true,
@@ -55,14 +63,19 @@ class FasilitasController extends Controller
     {
         // Validasi input
         $validator = Validator::make($request->all(), [
-            'nama_fasilitas' => 'required|string|max:255',
+            'nama_fasilitas' => 'nullable|string|max:255',
             'keterangan' => 'nullable|string|max:500',
+            'harga' => 'nullable|numeric|min:0', // validasi harga
+            'status' => 'required|in:tersedia,tidaktersedia', // validasi status
         ], [
-            'nama_fasilitas.required' => 'Nama fasilitas wajib diisi.',
             'nama_fasilitas.string' => 'Nama fasilitas harus berupa teks.',
             'nama_fasilitas.max' => 'Nama fasilitas maksimal 255 karakter.',
             'keterangan.string' => 'Keterangan harus berupa teks.',
             'keterangan.max' => 'Keterangan maksimal 500 karakter.',
+            'harga.numeric' => 'Harga harus berupa angka.',
+            'harga.min' => 'Harga tidak boleh kurang dari 0.',
+            'status.required' => 'Status wajib diisi.',
+            'status.in' => 'Status harus bernilai "tersedia" atau "tidak tersedia".',
         ]);
 
         // Jika validasi gagal
@@ -74,7 +87,7 @@ class FasilitasController extends Controller
         }
 
         // Update data jika validasi berhasil
-        $id->update($request->all());
+        $id->update($request->only(['nama_fasilitas', 'keterangan', 'harga', 'status']));
 
         return response()->json([
             'success' => true,
