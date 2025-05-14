@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('konten');
             $table->string('gambar')->nullable();
             $table->date('tanggal'); 
+            $table->enum('status', ['Publikasi', 'Draft']); 
             $table->timestamps();
         });
     }
