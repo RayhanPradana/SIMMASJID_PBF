@@ -77,48 +77,50 @@ class AuthController extends Controller
 
 
     public function login(Request $request)
-{
-    $validator = Validator::make($request->all(), [
-        'email' => 'required',
-        'password' => 'required'
-    ]);
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required',
+            'password' => 'required'
+        ]);
 
-    if ($validator->fails()) {
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Username atau Password Anda salah'
+            ], 401);
+        }
+
+        $user = User::where('email', $request->email)->firstOrFail();
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        $redirectUrl = $user->role === 'admin' ? '/dashboard' : '/landing-page';
+
         return response()->json([
-            'success' => false,
-            'message' => 'Validasi error',
-            'errors' => $validator->errors()
-        ], 422);
+            'success' => true,
+            'message' => 'Login berhasil',
+            'user' => [
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role,
+                'avatar' => $user->avatar ?? '/avatars/default.jpg',
+                'image' => $user->image,
+                'phone' => $user->phone,
+                'address' => $user->address,
+
+            ],
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'redirect' => url($redirectUrl)
+        ], 200);
     }
-
-    if (!Auth::attempt($request->only('email', 'password'))) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Username atau Password Anda salah'
-        ], 401);
-    }
-
-    $user = User::where('email', $request->email)->firstOrFail();
-    $token = $user->createToken('auth_token')->plainTextToken;
-
-    $redirectUrl = $user->role === 'admin' ? '/dashboard' : '/landing-page';
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Login berhasil',
-        'user' => [
-            'name' => $user->name,
-            'email' => $user->email,
-            'role' => $user->role,
-            'avatar' => $user->avatar ?? '/avatars/default.jpg',
-            'image' => $user->image,
-
-        ],
-        'access_token' => $token,
-        'token_type' => 'Bearer',
-        'redirect' => url($redirectUrl)
-    ], 200);
-}
 
 
     public function logout(Request $request)
