@@ -39,7 +39,7 @@ class BeritaController extends Controller
             'konten' => 'required|string',
             'tanggal' => 'required|date',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
-            'status' => 'required|in:Draf,Publikasi',
+            'status' => 'required|in:Draft,Publikasi',
         ]);
 
         $gambar = $request->file('gambar');
@@ -105,7 +105,7 @@ class BeritaController extends Controller
                 'konten' => 'required|string',
                 'tanggal' => 'required|date',
                 'gambar' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
-                'status' => 'required|in:Draf,Publikasi',
+                'status' => 'required|in:Draft,Publikasi',
             ]);
 
             if ($request->hasFile('gambar')) {

@@ -15,16 +15,19 @@ class Keuangan extends Model
     
     // Daftar kolom yang bisa diisi (mass assignment)
     protected $fillable = [
+        'tanggal',
         'jenis',
-        'jumlah',
-        'sumber',
         'deskripsi',
-        'tanggal'
+        'total_masuk',
+        'total_keluar',
+        'dompet',
     ];
     
     // Cast tipe data
     protected $casts = [
-        'jumlah' => 'double',
+        'total_masuk' => 'double',
+        'total_keluar' => 'double',
+        'dompet' => 'double',
         'tanggal' => 'date',
     ];
     

@@ -10,11 +10,12 @@ return new class extends Migration
     {
         Schema::create('keuangan', function (Blueprint $table) {
             $table->id();
-            $table->enum('jenis', ['pemasukan', 'pengeluaran']);
-            $table->decimal('jumlah', 15, 2);
-            $table->string('sumber')->nullable();
-            $table->text('deskripsi')->nullable();
             $table->date('tanggal');
+            $table->enum('jenis', ['infaq', 'sedekah', 'donasi', 'zakat', 'wakaf', 'dana kegiatan', 'reservasi']);
+            $table->text('deskripsi')->nullable();
+            $table->decimal('total_masuk', 15, 2)->default(0);
+            $table->decimal('total_keluar', 15, 2)->default(0);
+            $table->decimal('dompet');
             $table->timestamps();
         });
     }
