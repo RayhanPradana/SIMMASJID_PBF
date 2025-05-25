@@ -21,8 +21,8 @@ use App\Http\Controllers\Api\SesiController;
 
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
- Route::get('jadwals', [JadwalController::class, 'index']);
-         Route::get('beritas', [BeritaController::class, 'index']);
+Route::get('jadwals', [JadwalController::class, 'index']);
+Route::get('beritas', [BeritaController::class, 'index']);
 
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -55,12 +55,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('users-profile', [UserController::class, 'updateProfile']);
         Route::post('users-photo', [UserController::class, 'updatePhoto']);
 
-        // Jadwal
-        Route::get('jadwal', [JadwalController::class, 'index']);
-        Route::post('jadwal', [JadwalController::class, 'store']);
-        Route::get('jadwal/{id}', [JadwalController::class, 'show']);
-        Route::put('jadwal/{id}', [JadwalController::class, 'update']);
-        Route::delete('jadwal/{id}', [JadwalController::class, 'destroy']);
+        // // Jadwal
+        // Route::get('jadwals', [JadwalController::class, 'index']);
+        // Route::post('jadwals', [JadwalController::class, 'store']);
+        // Route::get('jadwals/{id}', [JadwalController::class, 'show']);
+        // Route::put('jadwals/{id}', [JadwalController::class, 'update']);
+        // Route::delete('jadwals/{id}', [JadwalController::class, 'destroy']);
 
         Route::get('acarauser', [AcaraController::class, 'index']);
         Route::post('acarauser', [AcaraController::class, 'store']);

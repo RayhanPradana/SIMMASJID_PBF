@@ -101,7 +101,7 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->firstOrFail();
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        $redirectUrl = $user->role === 'admin' ? '/dashboard' : '/landing-page';
+        $redirectUrl = $user->role === 'admin' ? '/dashboard' : '/';
 
         return response()->json([
             'success' => true,
