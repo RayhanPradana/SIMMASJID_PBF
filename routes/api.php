@@ -18,8 +18,6 @@ use App\Http\Controllers\Api\AcaraController;
 use App\Http\Controllers\Api\SesiController;
 
 
-use App\Models\Berita;
-
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::get('jadwals', [JadwalController::class, 'index']);
