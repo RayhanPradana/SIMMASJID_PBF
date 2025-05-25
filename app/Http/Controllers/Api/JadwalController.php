@@ -19,18 +19,17 @@ class JadwalController extends Controller
         // Validasi input
         $validator = Validator::make($request->all(), [
             'nama_kegiatan' => 'required|string|max:255',
-            'hari' => 'required|string|max:50',
+            'tanggal' => 'required|date',
             'waktu' => 'required|string|max:50',
             'tempat' => 'required|string|max:255',
             'penanggung_jawab' => 'required|string|max:255',
             'keterangan' => 'nullable|string|max:500',
+            'status' => 'required|in:Draft,Publikasi',
         ], [
             'nama_kegiatan.required' => 'Nama kegiatan wajib diisi.',
             'nama_kegiatan.string' => 'Nama kegiatan harus berupa teks.',
             'nama_kegiatan.max' => 'Nama kegiatan maksimal 255 karakter.',
-            'hari.required' => 'Hari kegiatan wajib diisi.',
-            'hari.string' => 'Hari harus berupa teks.',
-            'hari.max' => 'Hari maksimal 50 karakter.',
+            'tanggal.required' => 'tanggal kegiatan wajib diisi.',
             'waktu.required' => 'Waktu kegiatan wajib diisi.',
             'waktu.string' => 'Waktu harus berupa teks.',
             'waktu.max' => 'Waktu maksimal 50 karakter.',
@@ -71,18 +70,17 @@ class JadwalController extends Controller
         // Validasi input
         $validator = Validator::make($request->all(), [
             'nama_kegiatan' => 'required|string|max:255',
-            'hari' => 'required|string|max:50',
+            'tanggal' => 'required|date',
             'waktu' => 'required|string|max:50',
             'tempat' => 'required|string|max:255',
             'penanggung_jawab' => 'nullable|string|max:255',
             'keterangan' => 'nullable|string|max:500',
+            'status' => 'required|in:Draft,Publikasi',
         ], [
             'nama_kegiatan.required' => 'Nama kegiatan wajib diisi.',
             'nama_kegiatan.string' => 'Nama kegiatan harus berupa teks.',
             'nama_kegiatan.max' => 'Nama kegiatan maksimal 255 karakter.',
-            'hari.required' => 'Hari kegiatan wajib diisi.',
-            'hari.string' => 'Hari harus berupa teks.',
-            'hari.max' => 'Hari maksimal 50 karakter.',
+            'tanggal.required' => 'tanggal kegiatan wajib diisi.',
             'waktu.required' => 'Waktu kegiatan wajib diisi.',
             'waktu.string' => 'Waktu harus berupa teks.',
             'waktu.max' => 'Waktu maksimal 50 karakter.',

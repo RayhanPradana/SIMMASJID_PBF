@@ -12,11 +12,12 @@ class Jadwal extends Model
 
     protected $fillable = [
         'nama_kegiatan',
-        'hari',
+        'tanggal',
         'waktu',
         'tempat',
         'penanggung_jawab',
         'keterangan',
+        'status',
     ];
 
     public function getJWTIdentifier(){
