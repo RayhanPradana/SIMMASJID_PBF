@@ -15,11 +15,11 @@ return new class extends Migration
             $table->text('deskripsi')->nullable();
             $table->decimal('total_masuk', 15, 2)->default(0);
             $table->decimal('total_keluar', 15, 2)->default(0);
-            $table->decimal('dompet');
+            $table->decimal('dompet', 15, 2)->default(0);
             $table->timestamps();
         });
     }
-  
+
     public function down(): void
     {
         Schema::dropIfExists('keuangan');
