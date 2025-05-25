@@ -20,16 +20,16 @@ class AcaraController extends Controller
         $validator = Validator::make($request->all(), [
             'nama_acara' => 'required|string|max:255',
             'deskripsi' => 'nullable|string|max:500',
-            'id' => 'nullable|string|max:50|unique:acaras,id', // Validasi untuk ID kustom
+            'harga' => 'required|numeric|min:0',
         ], [
             'nama_acara.required' => 'Nama acara wajib diisi.',
             'nama_acara.string' => 'Nama acara harus berupa teks.',
             'nama_acara.max' => 'Nama acara maksimal 255 karakter.',
             'deskripsi.string' => 'Deskripsi harus berupa teks.',
             'deskripsi.max' => 'Deskripsi maksimal 500 karakter.',
-            'id.unique' => 'ID acara sudah digunakan.',
-            'id.string' => 'ID acara harus berupa teks.',
-            'id.max' => 'ID acara maksimal 50 karakter.',
+            'harga.required' => 'Harga acara wajib diisi.',
+            'harga.numeric' => 'Harga harus berupa angka.',
+            'harga.min' => 'Harga tidak boleh kurang dari 0.',
         ]);
 
         // Jika validasi gagal
@@ -41,31 +41,7 @@ class AcaraController extends Controller
         }
 
         // Membuat data untuk disimpan
-        $data = $request->only(['nama_acara', 'deskripsi']);
-
-        // Jika ID diberikan dari frontend, gunakan ID tersebut
-        if ($request->has('id')) {
-            $data['id'] = $request->id;
-        } else {
-            // Jika tidak ada ID dari frontend, generate ID dengan format AC-{angka}
-            $latestAcara = Acara::orderBy('id', 'desc')->first();
-
-            if ($latestAcara) {
-                // Coba ekstrak nomor dari ID yang sudah ada (jika formatnya AC-123)
-                $matches = [];
-                if (preg_match('/AC-(\d+)/', $latestAcara->id, $matches)) {
-                    $nextNumber = intval($matches[1]) + 1;
-                } else {
-                    // Jika format tidak sesuai, mulai dari 1
-                    $nextNumber = 1;
-                }
-            } else {
-                // Jika belum ada data sama sekali
-                $nextNumber = 1;
-            }
-
-            $data['id'] = 'AC-' . $nextNumber;
-        }
+        $data = $request->only(['nama_acara', 'deskripsi', 'harga']);
 
         // Simpan data
         $acara = Acara::create($data);
@@ -110,11 +86,14 @@ class AcaraController extends Controller
         $validator = Validator::make($request->all(), [
             'nama_acara' => 'nullable|string|max:255',
             'deskripsi' => 'nullable|string|max:500',
+            'harga' => 'nullable|numeric|min:0',
         ], [
             'nama_acara.string' => 'Nama acara harus berupa teks.',
             'nama_acara.max' => 'Nama acara maksimal 255 karakter.',
             'deskripsi.string' => 'Deskripsi harus berupa teks.',
             'deskripsi.max' => 'Deskripsi maksimal 500 karakter.',
+            'harga.numeric' => 'Harga harus berupa angka.',
+            'harga.min' => 'Harga tidak boleh kurang dari 0.',
         ]);
 
         // Jika validasi gagal
@@ -126,7 +105,7 @@ class AcaraController extends Controller
         }
 
         // Update data
-        $acara->update($request->only(['nama_acara', 'deskripsi']));
+        $acara->update($request->only(['nama_acara', 'deskripsi', 'harga']));
 
         return response()->json([
             'status' => 'success',
@@ -155,5 +134,3 @@ class AcaraController extends Controller
         ]);
     }
 }
-
-

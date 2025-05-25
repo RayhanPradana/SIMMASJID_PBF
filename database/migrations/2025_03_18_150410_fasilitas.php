@@ -11,8 +11,8 @@ return new class extends Migration
         Schema::create('fasilitas', function (Blueprint $table) {
             $table->id();
             $table->string('nama_fasilitas');
-            $table->text('keterangan');
-            $table->decimal('harga', 12, 2); 
+            $table->string('keterangan')->nullable();
+            $table->decimal('harga', 12, 2);
             $table->enum('status', ['tersedia', 'tidaktersedia']);
             $table->timestamps();
         });

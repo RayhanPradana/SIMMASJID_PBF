@@ -13,17 +13,25 @@ return new class extends Migration
             $table->foreignId('acara_id')->constrained('acara')->onDelete('cascade');
             $table->foreignId('fasilitas_id')->constrained('fasilitas')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            // HAPUS sesi_id karena akan dipindah ke tabel pivot
             $table->date('tgl_reservasi');
-            $table->time('jam_mulai');
-            $table->time('jam_selesai');
-            $table->date('tgl_pembayaran')->nullable();
-            $table->enum('status_pembayaran', ['unpaid', 'paid'])->default('paid');
+            $table->enum('status_reservasi', [
+                'pending',
+                'ditolak',
+                'disetujui',
+                'menunggu lunas',
+                'siap digunakan',
+                'sedang berlangsung',
+                'dibatalkan',
+                'selesai'
+            ])->default('pending');
+            $table->decimal('harga', 12, 2)->nullable(); // Tambahan kolom harga
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('reservasi');
+        Schema::dropIfExists('reservasi_fasilitas');
     }
 };

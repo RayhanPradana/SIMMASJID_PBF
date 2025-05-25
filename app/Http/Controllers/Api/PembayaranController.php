@@ -1,143 +1,129 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Pembayaran;
-use Illuminate\Validation\Rule;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Models\ReservasiFasilitas;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class PembayaranController extends Controller
 {
     public function index()
     {
-        try {
-            // Mengambil semua data pembayaran beserta data reservasi yang berelasi
-            $pembayaran = Pembayaran::with('reservasi')->get();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Data Pembayaran Berhasil Diambil',
-                'data' => $pembayaran
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-            ], 500);
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
         }
+
+        $user = Auth::user();
+
+        if ($user->role === 'admin') {
+            $pembayaran = Pembayaran::with('reservasi')->latest()->get();
+        } else {
+            // Ambil ID reservasi milik user
+            $reservasiIds = ReservasiFasilitas::where('user_id', $user->id)->pluck('id');
+
+            $pembayaran = Pembayaran::whereIn('reservasi_fasilitas_id', $reservasiIds)
+                ->with('reservasi')
+                ->latest()
+                ->get();
+        }
+
+        // Tambahkan URL bukti transfer
+        $pembayaran->map(function ($item) {
+            $item->bukti_transfer_url = $item->bukti_transfer
+                ? asset('storage/' . $item->bukti_transfer)
+                : null;
+            return $item;
+        });
+
+        return response()->json($pembayaran);
     }
 
+    // Menyimpan data pembayaran baru
     public function store(Request $request)
     {
-        try {
-            $validatedData = $request->validate([
-                'user_id' => 'required|exists:users,id',
-                'reservasi_id' => 'required|exists:reservasi_fasilitas,id',
-                'tanggal_reservasi' => 'nullable|date_format:d-m-Y',
-                'tanggal_pembayaran' => 'nullable|date_format:d-m-Y',
-                'jumlah' => 'required|numeric|min:0',
-                'status' => 'required|in:pending,sukses,gagal',
-            ]);
+        $request->validate([
+            'reservasi_fasilitas_id' => 'required|exists:reservasi_fasilitas,id',
+            'jenis' => 'required|in:dp,pelunasan,lunas',
+            'metode_pembayaran' => 'required|in:transfer,tunai,lainnya',
+            'jumlah_pembayaran' => 'required|numeric|min:0',
+            'bukti_transfer' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
 
-            if ($request->hasFile('bukti_transfer')) {
-                $validatedData['bukti_transfer'] = $request->file('bukti_transfer')->store('bukti_transfer', 'public');
-            }
+        // Upload bukti transfer jika ada
+        $buktiPath = $request->hasFile('bukti_transfer')
+            ? $request->file('bukti_transfer')->store('bukti_transfer', 'public')
+            : null;
 
-            $pembayaran = Pembayaran::create($validatedData);
+        // Tentukan status berdasarkan jenis pembayaran
+        $status = match ($request->jenis) {
+            'dp' => 'belum lunas',
+            'lunas' => 'paid',
+            'pelunasan' => 'paid',
+            default => 'pending'
+        };
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Pembayaran Berhasil Dibuat',
-                'data' => $pembayaran
-            ], 201);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-            ], 500);
-        }
+        // Simpan data ke database
+        $pembayaran = Pembayaran::create([
+            'reservasi_fasilitas_id' => $request->reservasi_fasilitas_id,
+            'jenis' => $request->jenis,
+            'metode_pembayaran' => $request->metode_pembayaran,
+            'jumlah_pembayaran' => $request->jumlah_pembayaran,
+            'bukti_transfer' => $buktiPath,
+            'status' => $status,
+        ]);
+
+        return response()->json([
+            'message' => 'Pembayaran berhasil dikirim dan sedang diproses.',
+            'data' => $pembayaran
+        ], 201);
     }
 
+    // Menampilkan detail pembayaran
     public function show($id)
     {
-        try {
-            // Menampilkan data pembayaran beserta reservasi yang berelasi
-            $pembayaran = Pembayaran::with('reservasi')->findOrFail($id);
+        $pembayaran = Pembayaran::with('reservasi')->findOrFail($id);
+        $pembayaran->bukti_transfer_url = $pembayaran->bukti_transfer
+            ? asset('storage/' . $pembayaran->bukti_transfer)
+            : null;
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Data Pembayaran Ditemukan',
-                'data' => $pembayaran
-            ], 200);
-        } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Pembayaran tidak ditemukan'
-            ], 404);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-            ], 500);
-        }
+        return response()->json($pembayaran);
     }
 
+    // Update status pembayaran (paid/unpaid/pending)
     public function update(Request $request, $id)
     {
-        try {
-            $pembayaran = Pembayaran::findOrFail($id);
+        $pembayaran = Pembayaran::findOrFail($id);
 
-            $validatedData = $request->validate([
-                'jumlah' => 'sometimes|numeric|min:0',
-                'status' => 'sometimes|in:pending,sukses,gagal',
-                'tanggal_pembayaran' => 'sometimes|date_format:Y-m-d'
-            ]);
+        $request->validate([
+            'status' => 'required|in:pending,belum lunas,paid,unpaid',
+        ]);
 
-            if ($request->hasFile('bukti_transfer')) {
-                $validatedData['bukti_transfer'] = $request->file('bukti_transfer')->store('bukti_transfer', 'public');
-            }
+        $pembayaran->update([
+            'status' => $request->status,
+        ]);
 
-            $pembayaran->update($validatedData);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Pembayaran Berhasil Diperbarui',
-                'data' => $pembayaran
-            ], 200);
-        } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Pembayaran tidak ditemukan'
-            ], 404);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-            ], 500);
-        }
+        return response()->json([
+            'message' => 'Status pembayaran berhasil diperbarui.',
+            'data' => $pembayaran
+        ]);
     }
 
+    // Menghapus pembayaran dan file bukti transfer
     public function destroy($id)
     {
-        try {
-            $pembayaran = Pembayaran::findOrFail($id);
-            $pembayaran->delete();
+        $pembayaran = Pembayaran::findOrFail($id);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Pembayaran Berhasil Dihapus'
-            ], 200);
-        } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Pembayaran tidak ditemukan'
-            ], 404);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-            ], 500);
+        // Hapus file jika ada
+        if ($pembayaran->bukti_transfer) {
+            Storage::disk('public')->delete($pembayaran->bukti_transfer);
         }
+
+        $pembayaran->delete();
+
+        return response()->json(['message' => 'Pembayaran berhasil dihapus.']);
     }
 }

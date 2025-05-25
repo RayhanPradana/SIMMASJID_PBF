@@ -15,5 +15,6 @@ class Acara extends Model
     protected $fillable = [
         'nama_acara',
         'deskripsi',
+        'harga',
     ];
 }

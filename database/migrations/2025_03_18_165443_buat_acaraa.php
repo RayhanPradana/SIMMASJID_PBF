@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('nama_acara'); // Contoh: Akad Nikah, Resepsi Pernikahan
             $table->text('deskripsi')->nullable(); // Deskripsi tambahan
+            $table->decimal('harga', 12, 2); 
             $table->timestamps(); // created_at dan updated_at
         });
     }
