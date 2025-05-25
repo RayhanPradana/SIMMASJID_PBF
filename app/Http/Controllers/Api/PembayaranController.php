@@ -4,45 +4,20 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Pembayaran;
+use Illuminate\Container\Attributes\DB;
+use Illuminate\Validation\Rule;
 use App\Models\ReservasiFasilitas;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PembayaranController extends Controller
 {
     public function index()
     {
-        if (!Auth::check()) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-
-        $user = Auth::user();
-
-        if ($user->role === 'admin') {
-            $pembayaran = Pembayaran::with('reservasi')->latest()->get();
-        } else {
-            // Ambil ID reservasi milik user
-            $reservasiIds = ReservasiFasilitas::where('user_id', $user->id)->pluck('id');
-
-            $pembayaran = Pembayaran::whereIn('reservasi_fasilitas_id', $reservasiIds)
-                ->with('reservasi')
-                ->latest()
-                ->get();
-        }
-
-        // Tambahkan URL bukti transfer
-        $pembayaran->map(function ($item) {
-            $item->bukti_transfer_url = $item->bukti_transfer
-                ? asset('storage/' . $item->bukti_transfer)
-                : null;
-            return $item;
-        });
-
-        return response()->json($pembayaran);
+        $pembayaran = Pembayaran::with('reservasi')->get();
+    return response()->json($pembayaran);
     }
 
-    // Menyimpan data pembayaran baru
+
     public function store(Request $request)
     {
         $request->validate([

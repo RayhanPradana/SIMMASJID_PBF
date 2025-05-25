@@ -18,12 +18,16 @@ use App\Http\Controllers\Api\AcaraController;
 use App\Http\Controllers\Api\SesiController;
 
 
+use App\Models\Berita;
 
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::get('jadwals', [JadwalController::class, 'index']);
 Route::get('beritas', [BeritaController::class, 'index']);
 
+
+Route::get('jadwals', [JadwalController::class, 'index']);
+Route::get('beritas', [BeritaController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -44,6 +48,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('keuangan/{id}', [KeuanganController::class, 'show']);
         Route::put('keuangan/{id}', [KeuanganController::class, 'update']);
         Route::delete('keuangan/{id}', [KeuanganController::class, 'destroy']);
+        //user
+        Route::post('users1-update', [UserController::class, 'updatePassword']);
+        Route::post('users1-profile', [UserController::class, 'updateProfile']);
+        Route::post('users1-photo', [UserController::class, 'updatePhoto']);
+
+        Route::get('berita1', [BeritaController::class, 'index']);
+        Route::get('berita1/{id}', [BeritaController::class, 'show']);
+
+        Route::get('jadwal1', [JadwalController::class, 'index']);
+        Route::get('jadwal1/{id}', [JadwalController::class, 'show']);
 
         // User
         Route::get('usersuser', [UserController::class, 'index']);
@@ -111,6 +125,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('keuangan/{id}', [KeuanganController::class, 'show']);
         Route::put('keuangan/{id}', [KeuanganController::class, 'update']);
         Route::delete('keuangan/{id}', [KeuanganController::class, 'destroy']);
+        Route::get('keuangan-laporan', [KeuanganController::class, 'laporan']);
+        Route::get('keuangan-cetak', [KeuanganController::class, 'cetak']);
 
         // User
         Route::get('users', [UserController::class, 'index']);
@@ -129,6 +145,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('jadwal/{id}', [JadwalController::class, 'update']);
         Route::delete('jadwal/{id}', [JadwalController::class, 'destroy']);
 
+        //acara
         Route::get('acara', [AcaraController::class, 'index']);
         Route::post('acara', [AcaraController::class, 'store']);
         Route::get('acara/{id}', [AcaraController::class, 'show']);

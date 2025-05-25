@@ -44,4 +44,9 @@ class ReservasiFasilitas extends Model
     {
         return $this->hasOne(Pembayaran::class, 'reservasi_fasilitas_id');
     }
+
+    public function pembayaran()
+{
+    return $this->hasOne(Pembayaran::class, 'reservasi_id');
+}
 }

@@ -20,7 +20,18 @@ class Pembayaran extends Model
         'status',
     ];
 
-    // Relasi ke tabel reservasi_fasilitas
+    // Cast tipe data
+    protected $casts = [
+        'jumlah' => 'double',
+        'tanggal_reservasi' => 'date',
+        'tanggal_pembayaran' => 'date',
+    ];
+
+
+
+    /**
+     * Relasi ke tabel reservasi_fasilitas
+     */
     public function reservasi()
     {
         return $this->belongsTo(ReservasiFasilitas::class, 'reservasi_fasilitas_id');

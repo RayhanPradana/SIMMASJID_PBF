@@ -16,10 +16,10 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email|max:255',
-            'phone' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:255|unique:users,phone',
             'address' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
-            'role' => 'required|in:admin,pengurusmesjid,jemaah',
+            'role' => 'required|in:admin,jemaah',
             'password' => [
                 'required',
                 'string',

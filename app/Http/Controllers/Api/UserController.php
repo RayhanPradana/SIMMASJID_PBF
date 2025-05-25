@@ -284,7 +284,6 @@ class UserController extends Controller
             ], 422);
         }
         if ($request->hasFile('image')) {
-            // Hapus gambar lama jika ada
             if ($user->image) {
                 Storage::disk('public')->delete($user->image);
             }
