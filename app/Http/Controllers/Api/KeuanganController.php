@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Keuangan;
+use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class KeuanganController extends Controller
 {
@@ -120,6 +122,43 @@ class KeuanganController extends Controller
 
         return response()->json([
             'message' => 'Data keuangan berhasil dihapus.',
+        ]);
+    }
+
+    public function laporan(Request $request)
+    {
+        $filterType = $request->query('filterType');
+        $filterDate = $request->query('filterDate');
+
+        $query = Keuangan::query();
+
+        if ($filterType && $filterDate) {
+            switch ($filterType) {
+                case 'mingguan':
+                    $date = Carbon::parse($filterDate);
+                    $startOfRange = $date->startOfDay();
+                    $endOfRange = $date->copy()->addDays(6)->endOfDay();
+
+                    $query->whereBetween('tanggal', [$startOfRange->toDateString(), $endOfRange->toDateString()]);
+                    break;
+
+                case 'bulanan':
+                    $date = Carbon::parse($filterDate);
+                    $query->whereMonth('tanggal', $date->month)
+                        ->whereYear('tanggal', $date->year);
+                    break;
+
+                case 'tahunan':
+                    $query->whereYear('tanggal', $filterDate);
+                    break;
+            }
+        }
+
+        $data = $query->orderBy('tanggal', 'desc')->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $data
         ]);
     }
 }

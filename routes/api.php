@@ -15,10 +15,13 @@ use App\Http\Controllers\Api\PembayaranController;
 use App\Http\Controllers\Api\KeuanganController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\AcaraController;
-
+use App\Models\Berita;
 
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
+
+Route::get('jadwals', [JadwalController::class, 'index']);
+Route::get('beritas', [BeritaController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -26,11 +29,16 @@ Route::middleware('auth:sanctum')->group(function () {
     // ================== Route JEMAAH ====================
     Route::middleware('role:jemaah')->group(function () {
 
-        Route::get('berita', [BeritaController::class, 'index']);
-        Route::get('berita/{id}', [BeritaController::class, 'show']);
+        //user
+        Route::post('users1-update', [UserController::class, 'updatePassword']);
+        Route::post('users1-profile', [UserController::class, 'updateProfile']);
+        Route::post('users1-photo', [UserController::class, 'updatePhoto']);
 
-        Route::get('jadwal', [JadwalController::class, 'index']);
-        Route::get('jadwal/{id}', [JadwalController::class, 'show']);
+        Route::get('berita1', [BeritaController::class, 'index']);
+        Route::get('berita1/{id}', [BeritaController::class, 'show']);
+
+        Route::get('jadwal1', [JadwalController::class, 'index']);
+        Route::get('jadwal1/{id}', [JadwalController::class, 'show']);
 
         Route::get('fasilitas', [FasilitasController::class, 'index']);
         Route::get('fasilitas/{id}', [FasilitasController::class, 'show']);
@@ -62,6 +70,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('keuangan/{id}', [KeuanganController::class, 'show']);
         Route::put('keuangan/{id}', [KeuanganController::class, 'update']);
         Route::delete('keuangan/{id}', [KeuanganController::class, 'destroy']);
+        Route::get('keuangan-laporan', [KeuanganController::class, 'laporan']);
+        Route::get('keuangan-cetak', [KeuanganController::class, 'cetak']);
 
         // User
         Route::get('users', [UserController::class, 'index']);
@@ -80,6 +90,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('jadwal/{id}', [JadwalController::class, 'update']);
         Route::delete('jadwal/{id}', [JadwalController::class, 'destroy']);
 
+        //acara
         Route::get('acara', [AcaraController::class, 'index']);
         Route::post('acara', [AcaraController::class, 'store']);
         Route::get('acara/{id}', [AcaraController::class, 'show']);
@@ -98,8 +109,5 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('reservasi/{id}', [ReservasiController::class, 'show']);
         Route::put('reservasi/{id}', [ReservasiController::class, 'update']);
         Route::delete('reservasi/{id}', [ReservasiController::class, 'destroy']);
-
-
-
     });
 });

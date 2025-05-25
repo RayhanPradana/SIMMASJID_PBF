@@ -129,4 +129,9 @@ class ReservasiFasilitas extends Model
     public function getJWTCustomClaims(){
         return [];
     }
+
+    public function pembayaran()
+{
+    return $this->hasOne(Pembayaran::class, 'reservasi_id');
+}
 }

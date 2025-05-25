@@ -30,6 +30,8 @@ class Pembayaran extends Model
         'tanggal_pembayaran' => 'date',
     ];
 
+    
+
     /**
      * Relasi ke tabel reservasi_fasilitas
      */

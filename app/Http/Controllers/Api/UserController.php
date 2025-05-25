@@ -131,24 +131,39 @@ class UserController extends Controller
             }
 
             $imagePath = $request->file('image')->store('images', 'public');
-        } else {
-            $imagePath = $id->image;
+            $id->image = $imagePath;
         }
+        // $imagePath = $id->image;
 
-        $id->update([
-            'name' => $request->name ?? $id->name,
-            'email' => $request->email ?? $id->email,
-            'phone' => $request->phone ?? $id->phone,
-            'address' => $request->address ?? $id->address,
-            'image' => $imagePath,
-            'role' => $request->role ?? $id->role, // Gunakan nilai lama jika kosong
-            'password' => $request->password ? bcrypt($request->password) : $id->password,
-        ]);
+        // if ($request->hasFile('image')) {
+        //     // Hapus gambar lama jika ada
+        //     if ($id->image) {
+        //         Storage::disk('public')->delete($id->image);
+        //     }
+
+        //     $imagePath = $request->file('image')->store('images', 'public');
+        // }
+
+        $id->name = $request->name ?? $id->name;
+        $id->email = $request->email ?? $id->email;
+        $id->phone = $request->phone ?? $id->phone;
+        $id->address = $request->address ?? $id->address;
+        $id->role = $request->role ?? $id->role;
+        $id->password = $request->password ? bcrypt($request->password) : $id->password;
+        $id->save();
 
         return response()->json([
             'success' => true,
             'message' => 'User berhasil diperbarui',
-            'data' => $id
+            'data' => [
+                'id' => $id->id,
+                'name' => $id->name,
+                'email' => $id->email,
+                'phone' => $id->phone,
+                'address' => $id->address,
+                'image' => $id->image, 
+                'role' => $id->role,
+            ]
         ], 200);
     }
 
@@ -269,7 +284,6 @@ class UserController extends Controller
             ], 422);
         }
         if ($request->hasFile('image')) {
-            // Hapus gambar lama jika ada
             if ($user->image) {
                 Storage::disk('public')->delete($user->image);
             }

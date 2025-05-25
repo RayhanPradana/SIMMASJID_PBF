@@ -1,32 +1,23 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Pembayaran;
+use Illuminate\Container\Attributes\DB;
 use Illuminate\Validation\Rule;
+use App\Models\ReservasiFasilitas;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PembayaranController extends Controller
 {
     public function index()
     {
-        try {
-            // Mengambil semua data pembayaran beserta data reservasi yang berelasi
-            $pembayaran = Pembayaran::with('reservasi')->get();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Data Pembayaran Berhasil Diambil',
-                'data' => $pembayaran
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
-            ], 500);
-        }
+        $pembayaran = Pembayaran::with('reservasi')->get();
+    return response()->json($pembayaran);
     }
+
 
     public function store(Request $request)
     {
