@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('kegiatan', function (Blueprint $table) {
             $table->id();
             $table->string('nama_kegiatan');
-            $table->string('hari');
+            $table->date('tanggal');
             $table->time('waktu');
             $table->string('tempat'); 
             $table->string('penanggung_jawab'); 
             $table->text('keterangan'); 
+            $table->enum('status', ['Publikasi', 'Draft']); 
             $table->timestamps();
         });
     }

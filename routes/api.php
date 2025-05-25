@@ -21,6 +21,9 @@ use App\Http\Controllers\Api\SesiController;
 
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
+ Route::get('jadwals', [JadwalController::class, 'index']);
+         Route::get('beritas', [BeritaController::class, 'index']);
+
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
