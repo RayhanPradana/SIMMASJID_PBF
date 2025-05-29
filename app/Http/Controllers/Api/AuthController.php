@@ -8,6 +8,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Models\Keuangan;
+use App\Models\Jadwal;
+use App\Models\Berita;
+use App\Models\Acara;
+use App\Models\ReservasiFasilitas;
+use App\Models\Sesi;
+use App\Models\Fasilitas;
+use App\Models\Pembayaran;
 
 class AuthController extends Controller
 {
@@ -132,4 +140,27 @@ class AuthController extends Controller
             'message' => 'Logout berhasil'
         ], 200);
     }
+
+    public function dashboard()
+    {
+        $data = [
+        'users' => User::all(),
+        'keuangan' => Keuangan::all(),
+        'jadwal' => Jadwal::all(),
+        'berita' => Berita::all(),
+        'acara' => Acara::all(),
+        'reservasi_fasilitas' => ReservasiFasilitas::all(),
+        'sesi' => Sesi::all(),
+        'fasilitas' => Fasilitas::all(),
+        'pembayaran' => Pembayaran::all()
+    ];
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Data dashboard berhasil dimuat',
+        'data' => $data
+    ], 200);
+    }
+
+
 }
