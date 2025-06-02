@@ -17,7 +17,7 @@ steps:
       [ "$$EXPECTED_CHECKSUM" = "$$ACTUAL_CHECKSUM" ] &&
       sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer &&
       rm composer-setup.php &&
-      sudo systemctl restart apache2
+      sudo systemctl restart apache2"
       
 
   # Step 1: Git pull + safe.directory
