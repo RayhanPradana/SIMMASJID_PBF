@@ -1,6 +1,6 @@
 steps:
 
-  # Step 0: Install apache2, mysql-server, php-mysql
+  # Step 0: Install apache2, mysql-server, php-mysql, dan composer
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
       - 'compute'
@@ -10,11 +10,17 @@ steps:
       - >-
         --command=bash -c "
         sudo apt-get update &&
-        sudo apt-get install -y apache2 mysql-server php-mysql &&
+        sudo apt-get install -y apache2 mysql-server php-mysql php-cli unzip curl &&
+        EXPECTED_CHECKSUM=$(php -r 'copy(\"https://composer.github.io/installer.sig\", \"php://stdout\");') &&
+        php -r \"copy('https://getcomposer.org/installer', 'composer-setup.php');\" &&
+        ACTUAL_CHECKSUM=$(php -r \"echo hash_file('sha384', 'composer-setup.php');\") &&
+        [ \"\$EXPECTED_CHECKSUM\" = \"\$ACTUAL_CHECKSUM\" ] &&
+        sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer &&
+        rm composer-setup.php &&
         sudo systemctl restart apache2
         "
 
-  # ✅ Step 1: Git pull dengan set safe.directory
+  # Step 1: Git pull + safe.directory
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
       - 'compute'
@@ -28,7 +34,7 @@ steps:
         git pull origin Optimization
         "
 
-  # Step 2: Install dependency dan artisan command
+  # Step 2: Laravel dependency & artisan commands
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
       - 'compute'
