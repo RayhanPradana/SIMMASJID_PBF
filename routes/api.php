@@ -23,7 +23,6 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::get('jadwals', [JadwalController::class, 'index']);
 Route::get('beritas', [BeritaController::class, 'index']);
 
-
 Route::get('jadwals', [JadwalController::class, 'index']);
 Route::get('beritas', [BeritaController::class, 'index']);
 

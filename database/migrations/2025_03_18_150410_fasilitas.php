@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('nama_fasilitas');
             $table->string('keterangan')->nullable();
             $table->decimal('harga', 12, 2);
+            $table->string('gambar')->nullable();
             $table->enum('status', ['tersedia', 'tidaktersedia']);
             $table->timestamps();
         });

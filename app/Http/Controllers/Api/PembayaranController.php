@@ -4,17 +4,34 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Pembayaran;
-use Illuminate\Container\Attributes\DB;
-use Illuminate\Validation\Rule;
 use App\Models\ReservasiFasilitas;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PembayaranController extends Controller
 {
     public function index()
     {
-        $pembayaran = Pembayaran::with('reservasi')->get();
-    return response()->json($pembayaran);
+        // Load pembayaran with nested relations
+        $pembayaran = Pembayaran::with(['reservasi.user'])->get();
+
+        // Transform the data to include user name
+        $pembayaran = $pembayaran->map(function ($item) {
+            $userData = null;
+            if ($item->reservasi && $item->reservasi->user) {
+                $userData = [
+                    'id' => $item->reservasi->user->id,
+                    'name' => $item->reservasi->user->name,
+                ];
+            }
+
+            return array_merge($item->toArray(), [
+                'nama_penyewa' => $userData ? $userData['name'] : null
+            ]);
+        });
+
+        return response()->json($pembayaran);
     }
 
 
@@ -60,10 +77,15 @@ class PembayaranController extends Controller
     // Menampilkan detail pembayaran
     public function show($id)
     {
-        $pembayaran = Pembayaran::with('reservasi')->findOrFail($id);
+        $pembayaran = Pembayaran::with(['reservasi.user'])->findOrFail($id);
+
+        // Add bukti_transfer_url
         $pembayaran->bukti_transfer_url = $pembayaran->bukti_transfer
             ? asset('storage/' . $pembayaran->bukti_transfer)
             : null;
+
+        // Add nama_penyewa
+        $pembayaran->nama_penyewa = $pembayaran->reservasi->user->name ?? null;
 
         return response()->json($pembayaran);
     }

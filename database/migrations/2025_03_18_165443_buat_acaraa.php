@@ -11,9 +11,11 @@ return new class extends Migration
         Schema::create('acara', function (Blueprint $table) {
             $table->id();
             $table->string('nama_acara'); // Contoh: Akad Nikah, Resepsi Pernikahan
-            $table->text('deskripsi')->nullable(); // Deskripsi tambahan
-            $table->decimal('harga', 12, 2); 
-            $table->timestamps(); // created_at dan updated_at
+            $table->text('deskripsi')->nullable();
+            $table->decimal('harga', 12, 2);
+            $table->string('gambar')->nullable();
+            $table->enum('status', ['tersedia', 'tidaktersedia']);
+            $table->timestamps(); 
         });
     }
 
