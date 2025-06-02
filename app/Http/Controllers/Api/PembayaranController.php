@@ -8,13 +8,15 @@ use Illuminate\Container\Attributes\DB;
 use Illuminate\Validation\Rule;
 use App\Models\ReservasiFasilitas;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PembayaranController extends Controller
 {
     public function index()
     {
         $pembayaran = Pembayaran::with('reservasi')->get();
-    return response()->json($pembayaran);
+        return response()->json($pembayaran);
     }
 
 
