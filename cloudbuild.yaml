@@ -6,7 +6,7 @@ steps:
       - 'compute'
       - 'ssh'
       - 'simmasjid-eka'  # Replace with the name of your Compute Engine VM instance
-      - '--zone=asia-southeast2-a'  # Replace with the zone of your Compute Engine VM instance
+      - '--zone=asia-east1'  # Replace with the zone of your Compute Engine VM instance
       - '--command=sudo apt-get update && sudo apt-get install -y mysql-server php-mysql && sudo systemctl restart apache2'
 
   # Step 1: Git pull
@@ -15,7 +15,7 @@ steps:
       - 'compute'
       - 'ssh'
       - 'simmasjid-eka'
-      - '--zone=asia-southeast2-a'
+      - '--zone=asia-east1'
       - '--command=cd /var/www/html/SIMMASJID_PBF_Deploy && git pull origin Optimization'
 
   # Step 2: Install dependency dan artisan commands
@@ -24,7 +24,7 @@ steps:
       - 'compute'
       - 'ssh'
       - 'simmasjid-eka'
-      - '--zone=asia-southeast2-a'
+      - '--zone=asia-east1'
       - '--command=cd /var/www/html/SIMMASJID_PBF_Deploy && composer install --no-interaction --prefer-dist && php artisan migrate --force && php artisan config:cache && php artisan storage:link'
 
     options:
