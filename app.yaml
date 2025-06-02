@@ -1,0 +1,30 @@
+steps:
+
+  # Step 0: Install mysqli (php-mysql) package
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'compute'
+      - 'ssh'
+      - 'simmasjid-eka'  # Replace with the name of your Compute Engine VM instance
+      - '--zone=asia-southeast2-a'  # Replace with the zone of your Compute Engine VM instance
+      - '--command=sudo apt-get update && sudo apt-get install -y mysql-server php-mysql && sudo systemctl restart apache2'
+
+  # Step 1: Git pull
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'compute'
+      - 'ssh'
+      - 'simmasjid-eka'
+      - '--zone=asia-southeast2-a'
+      - '--command=cd /var/www/html/SIMMASJID_PBF_Deploy && git pull origin Optimization'
+
+  # Step 2: Install dependency dan artisan commands
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'compute'
+      - 'ssh'
+      - 'simmasjid-eka'
+      - '--zone=asia-southeast2-a'
+      - '--command=cd /var/www/html/SIMMASJID_PBF_Deploy && composer install --no-interaction --prefer-dist && php artisan migrate --force && php artisan config:cache && php artisan storage:link'
+
+timeout: '1200s'
