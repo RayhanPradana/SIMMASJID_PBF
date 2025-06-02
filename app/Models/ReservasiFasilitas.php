@@ -17,7 +17,7 @@ class ReservasiFasilitas extends Model
         'user_id',
         'tgl_reservasi',
         'status_reservasi',
-        'harga', 
+        'harga',
     ];
 
     public function acara()
@@ -40,6 +40,7 @@ class ReservasiFasilitas extends Model
         return $this->belongsTo(User::class);
     }
 
+<<<<<<< HEAD
     // public function pembayaran()
     // {
     //     return $this->hasOne(Pembayaran::class, 'reservasi_fasilitas_id');
@@ -49,4 +50,10 @@ class ReservasiFasilitas extends Model
 {
     return $this->hasOne(Pembayaran::class, 'reservasi_id');
 }
+=======
+    public function pembayaran()
+    {
+        return $this->hasOne(Pembayaran::class, 'reservasi_id');
+    }
+>>>>>>> d7674b2adaadd7128d26201ee8899d45d0497c96
 }
