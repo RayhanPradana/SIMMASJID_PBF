@@ -7,7 +7,7 @@ steps:
       - 'ssh'
       - 'simmasjid-eka'  # Replace with the name of your Compute Engine VM instance
       - '--zone=asia-east1-a'  # Replace with the zone of your Compute Engine VM instance
-      - '--command=sudo apt-get update && sudo apt-get install -y mysql-server php-mysql && sudo systemctl restart apache2'
+      - '--command=bash -c "until sudo apt-get update; do echo Waiting for apt lock; sleep 5; done && sudo apt-get install -y mysql-server php-mysql && sudo systemctl restart apache2"'
 
   # Step 1: Git pull
   - name: 'gcr.io/cloud-builders/gcloud'
