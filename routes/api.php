@@ -23,7 +23,6 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::get('jadwals', [JadwalController::class, 'index']);
 Route::get('beritas', [BeritaController::class, 'index']);
 
-
 Route::get('jadwals', [JadwalController::class, 'index']);
 Route::get('beritas', [BeritaController::class, 'index']);
 
@@ -111,6 +110,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('role:admin')->group(function () {
         
 
+        // Dashboard
+        Route::get('dashboard', [AuthController::class, 'dashboard']);
+        
         // Berita
         Route::get('berita', [BeritaController::class, 'index']);
         Route::post('berita', [BeritaController::class, 'store']);
