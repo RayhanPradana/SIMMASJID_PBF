@@ -27,4 +27,7 @@ steps:
       - '--zone=asia-southeast2-a'
       - '--command=cd /var/www/html/SIMMASJID_PBF_Deploy && composer install --no-interaction --prefer-dist && php artisan migrate --force && php artisan config:cache && php artisan storage:link'
 
+    options:
+      logging: CLOUD_LOGGING_ONLY
+
 timeout: '1200s'
