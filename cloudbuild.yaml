@@ -1,56 +1,60 @@
 steps:
-
-  # Step 0: Install apache2, mysql-server, php-mysql, dan composer
+  # Step 0: Update & Install Apache, MySQL, PHP 8.3 dan ekstensi PHP penting
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
-    - 'compute'
-    - 'ssh'
-    - 'simmasjid-eka'
-    - '--zone=asia-east1-a'
-    - '--command=|'
-    - |
-      sudo apt-get update &&
-      sudo apt-get install -y apache2 mysql-server php-mysql php-cli unzip curl &&
-      EXPECTED_CHECKSUM=$$(php -r 'copy("https://composer.github.io/installer.sig", "php://stdout");') &&
-      php -r 'copy("https://getcomposer.org/installer", "composer-setup.php");' &&
-      ACTUAL_CHECKSUM=$$(php -r 'echo hash_file("sha384", "composer-setup.php");') &&
-      [ "$$EXPECTED_CHECKSUM" = "$$ACTUAL_CHECKSUM" ] &&
-      sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer &&
-      rm composer-setup.php &&
-      sudo systemctl restart apache2"
-      
-
-  # Step 1: Git pull + safe.directory
-  - name: 'gcr.io/cloud-builders/gcloud'
-    args:
-      - 'compute'
-      - 'ssh'
-      - 'simmasjid-eka'
-      - '--zone=asia-east1-a'
-      - >-
-        --command=bash -c "
-        git config --global --add safe.directory /var/www/html/SIMMASJID_PBF_Deploy &&
-        cd /var/www/html/SIMMASJID_PBF_Deploy &&
-        git pull origin Optimization
+      - compute
+      - ssh
+      - simmasjid-eka
+      - --zone=asia-east1-a
+      - --command=bash -c "
+          sudo apt-get update &&
+          sudo apt-get install -y apache2 mysql-server curl unzip software-properties-common &&
+          sudo add-apt-repository -y ppa:ondrej/php &&
+          sudo apt-get update &&
+          sudo apt-get install -y php8.3 php8.3-cli php8.3-common php8.3-fpm php8.3-mysql php8.3-xml php8.3-mbstring php8.3-curl php8.3-zip php8.3-bcmath php8.3-gd &&
+          sudo systemctl restart apache2
         "
 
-  # Step 2: Laravel dependency & artisan commands
+  # Step 1: Install Composer secara global (jika belum ada)
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
-      - 'compute'
-      - 'ssh'
-      - 'simmasjid-eka'
-      - '--zone=asia-east1-a'
-      - >-
-        --command=bash -c "
-        cd /var/www/html/SIMMASJID_PBF_Deploy &&
-        composer install --no-interaction --prefer-dist &&
-        php artisan migrate --force &&
-        php artisan config:cache &&
-        php artisan storage:link
+      - compute
+      - ssh
+      - simmasjid-eka
+      - --zone=asia-east1-a
+      - --command=bash -c "
+          if ! command -v composer > /dev/null; then
+            curl -sS https://getcomposer.org/installer | php &&
+            sudo mv composer.phar /usr/local/bin/composer
+          fi
+        "
+
+  # Step 2: Git pull kode terbaru dari branch Optimization
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - compute
+      - ssh
+      - simmasjid-eka
+      - --zone=asia-east1-a
+      - --command=cd /var/www/html/SIMMASJID_PBF_Deploy && git pull origin Optimization
+
+  # Step 3: Install dependencies composer dan jalankan artisan commands
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - compute
+      - ssh
+      - simmasjid-eka
+      - --zone=asia-east1-a
+      - --command=bash -c "
+          cd /var/www/html/SIMMASJID_PBF_Deploy &&
+          composer install --no-interaction --prefer-dist &&
+          php artisan migrate --force &&
+          php artisan config:cache &&
+          php artisan route:cache &&
+          php artisan view:cache &&
+          php artisan storage:link
         "
 
 options:
   logging: CLOUD_LOGGING_ONLY
-
 timeout: '1200s'
