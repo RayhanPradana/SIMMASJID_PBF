@@ -29,6 +29,18 @@ steps:
           sudo mv composer.phar /usr/local/bin/composer
         fi
 
+  # Step X: Tambahkan safe.directory
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - compute
+      - ssh
+      - simmasjid-eka
+      - --zone=asia-east1-a
+      - --command=bash -c "
+          git config --global --add safe.directory /var/www/html/SIMMASJID_PBF_Deploy
+        "
+
+
   # Step 2: Git pull kode terbaru dari branch Optimization
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
