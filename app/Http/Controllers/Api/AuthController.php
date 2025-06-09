@@ -3,11 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Acara;
-use App\Models\Fasilitas;
-use App\Models\Jadwal;
-use App\Models\Keuangan;
-use App\Models\Pembayaran;
+
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -145,10 +141,6 @@ class AuthController extends Controller
             'message' => 'Logout berhasil'
         ], 200);
     }
-<<<<<<< HEAD
-
-
-=======
 
     public function dashboard()
     {
@@ -170,7 +162,6 @@ class AuthController extends Controller
         'data' => $data
     ], 200);
     }
->>>>>>> d7674b2adaadd7128d26201ee8899d45d0497c96
 
 
 }
