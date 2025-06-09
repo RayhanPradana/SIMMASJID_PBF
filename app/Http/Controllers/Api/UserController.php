@@ -104,7 +104,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'nullable|string|max:255',
             'email' => 'nullable|email|unique:users,email,' . $id->id . '|max:255',
-            'phone' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:255|unique:users,phone',
             'address' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
             'role' => 'nullable|in:admin,jemaah',

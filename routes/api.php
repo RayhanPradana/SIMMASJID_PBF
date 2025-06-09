@@ -109,6 +109,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ================== Route ADMIN ====================
     Route::middleware('role:admin')->group(function () {
+        
 
         // Dashboard
         Route::get('dashboard', [AuthController::class, 'dashboard']);
