@@ -98,6 +98,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('reservasiuser/{id}', [ReservasiController::class, 'update']);
         Route::delete('reservasiuser/{id}', [ReservasiController::class, 'destroy']);
         Route::post('/reservasiuser/confirm/{id}', [ReservasiController::class, 'confirm']);
+        Route::put('/reservasiuser/{id}/cancel', [ReservasiController::class, 'cancel']);
 
         Route::get('sesiuser', [SesiController::class, 'index']);
         Route::post('sesiuser', [SesiController::class, 'store']);
@@ -111,7 +112,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // Dashboard
         Route::get('dashboard', [AuthController::class, 'dashboard']);
-        
+
         // Berita
         Route::get('berita', [BeritaController::class, 'index']);
         Route::post('berita', [BeritaController::class, 'store']);

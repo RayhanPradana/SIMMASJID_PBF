@@ -163,6 +163,38 @@ class ReservasiController extends Controller
         ]);
     }
 
+    /**
+     * Cancel a pending reservation
+     */
+    public function cancel($id)
+    {
+        $user = Auth::user();
+
+        // Find reservation
+        $reservasi = $user->role === 'admin'
+            ? ReservasiFasilitas::findOrFail($id)
+            : ReservasiFasilitas::where('id', $id)
+                ->where('user_id', $user->id)
+                ->firstOrFail();
+
+        // Check if reservation can be cancelled
+        $allowedStatuses = ['pending', 'disetujui', 'menunggu lunas'];
+        if (!in_array($reservasi->status_reservasi, $allowedStatuses)) {
+            return response()->json([
+                'message' => 'Hanya reservasi dengan status pending, disetujui, atau menunggu lunas yang dapat dibatalkan'
+            ], 422);
+        }
+
+        // Update status to cancelled
+        $reservasi->status_reservasi = 'dibatalkan';
+        $reservasi->save();
+
+        return response()->json([
+            'message' => 'Reservasi berhasil dibatalkan',
+            'data' => $reservasi->load(['acara', 'fasilitas', 'sesi', 'user'])
+        ]);
+    }
+
     private function updateStatusOtomatis($reservasiCollection)
     {
         $now = Carbon::now();
