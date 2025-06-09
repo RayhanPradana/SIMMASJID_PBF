@@ -5,11 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Pembayaran;
 use App\Models\ReservasiFasilitas;
-<<<<<<< HEAD
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-=======
 use App\Models\User;
->>>>>>> d7674b2adaadd7128d26201ee8899d45d0497c96
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -17,9 +13,6 @@ class PembayaranController extends Controller
 {
     public function index()
     {
-<<<<<<< HEAD
-        $pembayaran = Pembayaran::with('reservasi')->get();
-=======
         // Load pembayaran with nested relations
         $pembayaran = Pembayaran::with(['reservasi.user'])->get();
 
@@ -38,7 +31,6 @@ class PembayaranController extends Controller
             ]);
         });
 
->>>>>>> d7674b2adaadd7128d26201ee8899d45d0497c96
         return response()->json($pembayaran);
     }
 

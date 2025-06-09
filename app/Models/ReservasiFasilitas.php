@@ -40,20 +40,8 @@ class ReservasiFasilitas extends Model
         return $this->belongsTo(User::class);
     }
 
-<<<<<<< HEAD
-    // public function pembayaran()
-    // {
-    //     return $this->hasOne(Pembayaran::class, 'reservasi_fasilitas_id');
-    // }
-
-    public function pembayaran()
-{
-    return $this->hasOne(Pembayaran::class, 'reservasi_id');
-}
-=======
     public function pembayaran()
     {
         return $this->hasOne(Pembayaran::class, 'reservasi_id');
     }
->>>>>>> d7674b2adaadd7128d26201ee8899d45d0497c96
 }
