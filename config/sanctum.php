@@ -17,7 +17,7 @@ return [
 
     'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
         '%s%s%s',
-        'localhost,localhost:3000,127.0.0.1,127.0.0.1:3000,127.0.0.1:8000,::1,34.101.47.131:3000,34.101.47.131:8000',
+        'localhost,localhost:3000,127.0.0.1,127.0.0.1:3000,127.0.0.1:8000,::1,34.101.47.131,34.101.47.131:3000,34.101.47.131:8000',
         Sanctum::currentApplicationUrlWithPort(),
         env('FRONTEND_URL') ? ','.parse_url(env('FRONTEND_URL'), PHP_URL_HOST) : ''
     ))),
@@ -48,6 +48,17 @@ return [
     */
 
     'expiration' => null,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Prefix
+    |--------------------------------------------------------------------------
+    |
+    | This value controls the prefix for the Sanctum API routes, such as the
+    | CSRF cookie endpoint. If set, all Sanctum's routes will be prefixed.
+    |
+    */
+    // 'prefix' => 'api',
 
     /*
     |--------------------------------------------------------------------------

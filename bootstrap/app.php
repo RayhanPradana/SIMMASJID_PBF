@@ -23,7 +23,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
         ]);
+        // $middleware->validateCsrfTokens(except: [
+        //     'api/*', // HIDUPKAN INI SEMENTARA SAJA UNTUK DEBUGGING
+        // ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        
     })->create();
