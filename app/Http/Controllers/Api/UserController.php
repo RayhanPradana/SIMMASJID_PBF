@@ -22,21 +22,23 @@ class UserController extends Controller
     {
 
         $messages = [
+            'name.required' => 'Nama wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'phone.regex' => 'Phone harus berupa angka',
+            'image.image' => 'Foto Profil harus berupa gambar dengan format jpeg, png, jpg, atau svg',
+            'image.max' => 'Gambar masksimal berukuran 2048 kilobyte',
             'role.required' => 'Role wajib diisi.',
             'password.required' => 'Password wajib diisi.',
             'password.min' => 'Password minimal harus 8 karakter.',
-            'password.confirmed' => 'Konfirmasi password tidak cocok.',
             'password.regex' => 'Password harus mengandung huruf kapital, huruf kecil, angka, dan karakter khusus.',
-            'password.regex:/[A-Z]/' => 'Password harus mengandung setidaknya satu huruf kapital.',
-            'password.regex:/[a-z]/' => 'Password harus mengandung setidaknya satu huruf kecil.',
-            'password.regex:/[0-9]/' => 'Password harus mengandung setidaknya satu angka.',
-            'password.regex:/[@$!%?&]/' => 'Password harus mengandung setidaknya satu karakter khusus (@$!%?&).',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password_confirmation.required' => 'Konfirmasi Password wajib diisi.',
         ];
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email|max:255',
-            'phone' => 'nullable|string|max:255|unique:users,phone',
+            'phone' => 'nullable|regex:/^[0-9]+$/|unique:users,phone',
             'address' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
             'role' => 'required|in:admin,jemaah',
@@ -101,21 +103,24 @@ class UserController extends Controller
 
     public function update(Request $request, User $id)
     {
+
+        $messages = [
+            'name.required' => 'Nama wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'phone.regex' => 'Phone harus berupa angka',
+            'image.image' => 'Foto Profil harus berupa gambar dengan format jpeg, png, jpg, atau svg',
+            'image.max' => 'Gambar masksimal berukuran 2048 kilobyte',
+            'role.required' => 'Role wajib diisi.',
+        ];
+
         $validator = Validator::make($request->all(), [
-            'name' => 'nullable|string|max:255',
-            'email' => 'nullable|email|unique:users,email,' . $id->id . '|max:255',
-            'phone' => 'nullable|string|max:255|unique:users,phone',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $id->id . '|max:255',
+            'phone' => 'nullable|string|max:255|unique:users,phone,' . $id->id . ',id',
             'address' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
-            'role' => 'nullable|in:admin,jemaah',
-            'password' => [
-                'nullable',
-                'string',
-                'min:8',
-                'confirmed',
-                'regex:/^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[@$!%?&])[A-Za-z\d@$!%?&]+$/'
-            ],
-        ]);
+            'role' => 'required|in:admin,jemaah',
+        ], $messages);
 
         if ($validator->fails()) {
             return response()->json([
@@ -161,7 +166,7 @@ class UserController extends Controller
                 'email' => $id->email,
                 'phone' => $id->phone,
                 'address' => $id->address,
-                'image' => $id->image, 
+                'image' => $id->image,
                 'role' => $id->role,
             ]
         ], 200);
@@ -183,7 +188,7 @@ class UserController extends Controller
 
         $messages = [
             'old_password.required' => 'Password lama wajib diisi.',
-            'new_password.required' => 'Password wajib diisi.',
+            'new_password.required' => 'Password baru wajib diisi.',
             'new_password.min' => 'Password minimal harus 8 karakter.',
             'new_password.confirmed' => 'Konfirmasi password tidak cocok.',
             'new_password.regex' => 'Password harus mengandung huruf kapital, huruf kecil, angka, dan karakter khusus.',
@@ -232,13 +237,20 @@ class UserController extends Controller
     public function updateProfile(Request $request)
     {
         $user = $request->user();
+    
+        $messages = [
+            'name.required' => 'Nama wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.unique' => 'Email sudah ada sebelumnya',
+            'phone.unique' => 'Phone sudah ada sebelumnya',
+        ];
 
         $validator = Validator::make($request->all(), [
-            'name' => 'nullable|string|max:255' . $user->id,
-            'email' => 'nullable|email|max:255|unique:users,email,' . $user->id,
+            'name' => 'required|string|max:255' . $user->id,
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:20|unique:users,phone,' . $user->id,
             'address' => 'nullable|string|max:500' . $user->id,
-        ]);
+        ], $messages);
 
         if ($validator->fails()) {
             return response()->json([
@@ -273,9 +285,14 @@ class UserController extends Controller
     {
         $user = $request->user();
 
+        $messages = [
+            'image.image' => 'Foto Profil harus berupa gambar dengan format jpeg, png, jpg, atau svg',
+            'image.max' => 'Gambar masksimal berukuran 2048 kilobyte',
+        ];
+
         $validator = Validator::make($request->all(), [
             'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
+        ], $messages);
 
         if ($validator->fails()) {
             return response()->json([

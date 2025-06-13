@@ -18,7 +18,7 @@ return new class extends Migration
             $table->time('waktu');
             $table->string('tempat'); 
             $table->string('penanggung_jawab'); 
-            $table->text('keterangan'); 
+            $table->text('keterangan')->nullable(); 
             $table->enum('status', ['Publikasi', 'Draft']); 
             $table->timestamps();
         });

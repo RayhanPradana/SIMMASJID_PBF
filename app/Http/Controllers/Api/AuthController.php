@@ -22,10 +22,24 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
+        $messages = [
+            'name.required' => 'Nama wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'phone.regex' => 'Phone harus berupa angka',
+            'image.image' => 'Foto Profil harus berupa gambar dengan format jpeg, png, jpg, atau svg',
+            'image.max' => 'Gambar masksimal berukuran 2048 kilobyte',
+            'role.required' => 'Role wajib diisi.',
+            'password.required' => 'Password wajib diisi.',
+            'password.min' => 'Password minimal harus 8 karakter.',
+            'password.regex' => 'Password harus mengandung huruf kapital, huruf kecil, angka, dan karakter khusus.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password_confirmation.required' => 'Konfirmasi Password wajib diisi.',
+        ];
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email|max:255',
-            'phone' => 'nullable|string|max:255|unique:users,phone',
+            'phone' => 'nullable|regex:/^[0-9]+$/|unique:users,phone',
             'address' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
             'role' => 'required|in:admin,jemaah',
@@ -34,10 +48,13 @@ class AuthController extends Controller
                 'string',
                 'min:8',
                 'confirmed',
-                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/'
+                'regex:/[A-Z]/', // Harus ada huruf kapital
+                'regex:/[a-z]/', // Harus ada huruf kecil
+                'regex:/[0-9]/', // Harus ada angka
+                'regex:/[@$!%*?&]/', // Harus ada karakter khusus
             ],
             'password_confirmation' => 'required',
-        ]);
+        ], $messages );
 
         if ($validator->fails()) {
             return response()->json([
@@ -87,10 +104,16 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        $messages = [
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Email harus berupa alamat surel yang valid',
+            'password.required' => 'Password wajib diisi.',
+        ];
+        
         $validator = Validator::make($request->all(), [
-            'email' => 'required',
+            'email' => 'required|email',
             'password' => 'required'
-        ]);
+        ], $messages);
 
         if ($validator->fails()) {
             return response()->json([
@@ -103,7 +126,7 @@ class AuthController extends Controller
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json([
                 'success' => false,
-                'message' => 'Username atau Password Anda salah'
+                'message' => 'Email atau Password Anda salah'
             ], 401);
         }
 
