@@ -116,7 +116,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id->id . '|max:255',
-            'phone' => 'nullable|string|max:255|unique:users,phone,' . $id->id . ',id',
+            'phone' => 'nullable|regex:/^[0-9]+$/|max:255|unique:users,phone,' . $id->id . ',id',
             'address' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
             'role' => 'required|in:admin,jemaah',
@@ -243,12 +243,13 @@ class UserController extends Controller
             'email.required' => 'Email wajib diisi.',
             'email.unique' => 'Email sudah ada sebelumnya',
             'phone.unique' => 'Phone sudah ada sebelumnya',
+            'phone.regex' => 'Phone harus berupa angka',
         ];
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255' . $user->id,
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-            'phone' => 'nullable|string|max:20|unique:users,phone,' . $user->id,
+            'phone' => 'nullable|regex:/^[0-9]+$/|max:20|unique:users,phone,' . $user->id,
             'address' => 'nullable|string|max:500' . $user->id,
         ], $messages);
 
